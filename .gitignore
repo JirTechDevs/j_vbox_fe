@@ -1,0 +1,70 @@
+# ============================
+# Flutter & Dart
+# ============================
+.dart_tool/
+.packages
+.pub/
+build/
+flutter_*.png
+
+# Generated plugin registrant
+lib/generated_plugin_registrant.dart
+
+# ============================
+# IDE / Tools
+# ============================
+.idea/
+.vscode/
+*.iml
+
+# MacOS
+.DS_Store
+
+# ============================
+# Logs / Temp
+# ============================
+*.log
+*.tmp
+
+# ============================
+# Environments / Secrets
+# ============================
+.env
+.env.*
+*.keystore
+*.jks
+
+# ============================
+# Android
+# ============================
+android/.gradle/
+android/app/build/
+android/local.properties
+android/key.properties
+android/captures/
+
+# ============================
+# iOS
+# ============================
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/build/
+ios/.symlinks/
+
+# ============================
+# Web
+# ============================
+web/.dart_tool/
+web/.flutter-plugins
+web/.flutter-plugins-dependencies
+
+# ============================
+# Linux
+# ============================
+linux/flutter/
+linux/.flatpak/
+
+# =========
