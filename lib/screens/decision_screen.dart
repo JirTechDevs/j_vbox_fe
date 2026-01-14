@@ -15,69 +15,81 @@ class DecisionScreen extends StatelessWidget {
     final controller = context.read<AppController>();
     final soundManager = SoundManager();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Warning Icon
-                const Icon(
-                  Icons.help_outline,
-                  size: 100,
-                  color: AppColors.warning,
-                ),
-                const SizedBox(height: 32),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        controller.goBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.cosmicBackground,
+          ),
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Warning Icon
+                    const Icon(
+                      Icons.help_outline,
+                      size: 100,
+                      color: AppColors.warning,
+                    ),
+                    const SizedBox(height: 32),
 
-                // Question
-                const Text(
-                  'Critical Decision',
-                  style: AppTextStyles.title,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
+                    // Question
+                    const Text(
+                      'Critical Decision',
+                      style: AppTextStyles.title,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
 
-                Text(
-                  'Continue risky behavior?',
-                  style: AppTextStyles.heading,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
+                    Text(
+                      'Continue risky behavior?',
+                      style: AppTextStyles.heading,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
 
-                Text(
-                  'This decision will determine your future health outcome.',
-                  style: AppTextStyles.bodyText,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 64),
+                    Text(
+                      'This decision will determine your future health outcome.',
+                      style: AppTextStyles.bodyText,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 64),
 
-                // YES - Continue risky behavior
-                _buildDecisionButton(
-                  context,
-                  controller,
-                  soundManager,
-                  label: 'YES',
-                  continueRisky: true,
-                  color: AppColors.danger,
-                  icon: Icons.warning,
-                ),
+                    // YES - Continue risky behavior
+                    _buildDecisionButton(
+                      context,
+                      controller,
+                      soundManager,
+                      label: 'YES',
+                      continueRisky: true,
+                      icon: Icons.warning,
+                      gradient: AppGradients.riskyButton,
+                    ),
 
-                const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                // NO - Stop risky behavior
-                _buildDecisionButton(
-                  context,
-                  controller,
-                  soundManager,
-                  label: 'NO',
-                  continueRisky: false,
-                  color: AppColors.success,
-                  icon: Icons.check_circle,
+                    // NO - Stop risky behavior
+                    _buildDecisionButton(
+                      context,
+                      controller,
+                      soundManager,
+                      label: 'NO',
+                      continueRisky: false,
+                      icon: Icons.check_circle,
+                      gradient: AppGradients.safeButton,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -91,24 +103,35 @@ class DecisionScreen extends StatelessWidget {
     SoundManager soundManager, {
     required String label,
     required bool continueRisky,
-    required Color color,
     required IconData icon,
+    required Gradient gradient,
   }) {
-    return SizedBox(
+    return Container(
       width: AppDimensions.buttonWidth,
       height: AppDimensions.buttonHeight,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 8,
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () {
           soundManager.playButtonPress();
           controller.makeDecision(continueRisky);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: Colors.transparent,
           foregroundColor: AppColors.textPrimary,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           ),
-          elevation: 8,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

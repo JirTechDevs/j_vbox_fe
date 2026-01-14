@@ -141,22 +141,37 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.error_outline,
+              Icons.videocam_off,
               color: Colors.white,
               size: 64,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Video loading error',
+              'Video Not Available',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
+            Text(
+              '(${widget.videoPath})',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: widget.onVideoComplete,
-              child: const Text('Continue'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              ),
+              child: const Text('SKIP SCENARIO'),
             ),
           ],
         ),

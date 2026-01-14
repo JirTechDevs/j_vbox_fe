@@ -15,55 +15,68 @@ class BehaviorSelectionScreen extends StatelessWidget {
     final controller = context.read<AppController>();
     final soundManager = SoundManager();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Title
-              const Text(
-                'Choose Behavior',
-                style: AppTextStyles.title,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        controller.goBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.cosmicBackground,
+          ),
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Title
+                  const Text(
+                    'Pilih Tindakan',
+                    style: AppTextStyles.title,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
 
-              // Role context
-              Text(
-                'As ${controller.getRoleDisplayName()}',
-                style: AppTextStyles.bodyText.copyWith(
-                  color: AppColors.secondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 64),
+                  // Role context
+                  Text(
+                    'Sebagai ${controller.getRoleDisplayName()}',
+                    style: AppTextStyles.bodyText.copyWith(
+                      color: AppColors.secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 64),
 
-              // Risky behavior option
-              _buildBehaviorButton(
-                context,
-                controller,
-                soundManager,
-                label: 'Risky Behavior',
-                behavior: BehaviorType.risky,
-                icon: Icons.warning,
-                color: AppColors.danger,
-              ),
+                  // Safe behavior option
+                  _buildBehaviorButton(
+                    context,
+                    controller,
+                    soundManager,
+                    label: 'Pakai Pengaman',
+                    behavior: BehaviorType.safe,
+                    icon: Icons.health_and_safety,
+                    gradient: AppGradients.safeButton,
+                  ),
 
-              const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-              // Safe behavior option
-              _buildBehaviorButton(
-                context,
-                controller,
-                soundManager,
-                label: 'Safe Behavior',
-                behavior: BehaviorType.safe,
-                icon: Icons.health_and_safety,
-                color: AppColors.success,
+                  // Risky behavior option
+                  _buildBehaviorButton(
+                    context,
+                    controller,
+                    soundManager,
+                    label: 'Tanpa Pengaman',
+                    behavior: BehaviorType.risky,
+                    icon: Icons.warning,
+                    gradient: AppGradients.riskyButton,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -77,33 +90,46 @@ class BehaviorSelectionScreen extends StatelessWidget {
     required String label,
     required BehaviorType behavior,
     required IconData icon,
-    required Color color,
+    required Gradient gradient,
   }) {
-    return SizedBox(
+    return Container(
       width: AppDimensions.buttonWidth,
       height: AppDimensions.buttonHeight,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 8,
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () {
           soundManager.playButtonPress();
           controller.selectBehavior(behavior);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: Colors.transparent,
           foregroundColor: AppColors.textPrimary,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           ),
-          elevation: 8,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 32),
             const SizedBox(width: 12),
-            Text(
-              label,
-              style: AppTextStyles.buttonText,
-              textAlign: TextAlign.center,
+            Flexible(
+              child: Text(
+                label,
+                style: AppTextStyles.buttonTextBehaviour,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

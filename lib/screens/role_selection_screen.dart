@@ -15,45 +15,57 @@ class RoleSelectionScreen extends StatelessWidget {
     final controller = context.read<AppController>();
     final soundManager = SoundManager();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Title
-              const Text(
-                'Select Your Role',
-                style: AppTextStyles.title,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 64),
+    return PopScope(
+      canPop: false, // Prevent default pop
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        controller.goBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.cosmicBackground,
+          ),
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Title
+                  const Text(
+                    'Pilih Peran',
+                    style: AppTextStyles.title,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 64),
 
-              // Gay option
-              _buildRoleButton(
-                context,
-                controller,
-                soundManager,
-                label: 'Gay',
-                role: UserRole.gay,
-                icon: Icons.person,
-                color: AppColors.primary,
-              ),
+                  // Laki-laki option
+                  _buildRoleButton(
+                    context,
+                    controller,
+                    soundManager,
+                    label: 'Laki-laki',
+                    role: UserRole.gay,
+                    icon: Icons.man, // Changed to silhouette
+                    gradient: AppGradients.primaryButton,
+                  ),
 
-              const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-              // PSK option
-              _buildRoleButton(
-                context,
-                controller,
-                soundManager,
-                label: 'Sex Worker (PSK)',
-                role: UserRole.psk,
-                icon: Icons.person_outline,
-                color: AppColors.secondary,
+                  // Perempuan option
+                  _buildRoleButton(
+                    context,
+                    controller,
+                    soundManager,
+                    label: 'Perempuan',
+                    role: UserRole.psk,
+                    icon: Icons.woman, // Changed to silhouette
+                    gradient: AppGradients.pinkButton,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -67,23 +79,34 @@ class RoleSelectionScreen extends StatelessWidget {
     required String label,
     required UserRole role,
     required IconData icon,
-    required Color color,
+    required Gradient gradient,
   }) {
-    return SizedBox(
+    return Container(
       width: AppDimensions.buttonWidth,
       height: AppDimensions.buttonHeight,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 8,
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () {
           soundManager.playButtonPress();
           controller.selectRole(role);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: Colors.transparent,
           foregroundColor: AppColors.textPrimary,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           ),
-          elevation: 8,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

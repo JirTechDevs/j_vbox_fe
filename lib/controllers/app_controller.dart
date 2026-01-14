@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../models/app_enums.dart';
 import '../utils/constants.dart';
@@ -21,6 +22,25 @@ class AppController extends ChangeNotifier {
   bool? get isHealthy => _isHealthy;
   bool? get continueRiskyBehavior => _continueRiskyBehavior;
 
+  /// Private method to update screen orientation based on state
+  void _updateOrientation() {
+    // VR states require landscape
+    if (_currentState == AppState.vrTimeLapse ||
+        _currentState == AppState.vrNegativeOutcome ||
+        _currentState == AppState.vrRecovery) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      // Menu and text-heavy screens use portrait
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+  }
+
   /// Navigate to main menu (reset state)
   void goToMainMenu() {
     _currentState = AppState.mainMenu;
@@ -28,12 +48,14 @@ class AppController extends ChangeNotifier {
     _selectedBehavior = null;
     _isHealthy = null;
     _continueRiskyBehavior = null;
+    _updateOrientation();
     notifyListeners();
   }
 
   /// Start scenario - go to role selection
   void startScenario() {
     _currentState = AppState.roleSelection;
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -41,6 +63,7 @@ class AppController extends ChangeNotifier {
   void selectRole(UserRole role) {
     _selectedRole = role;
     _currentState = AppState.behaviorSelection;
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -48,6 +71,7 @@ class AppController extends ChangeNotifier {
   void selectBehavior(BehaviorType behavior) {
     _selectedBehavior = behavior;
     _currentState = AppState.vrTimeLapse;
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -56,6 +80,7 @@ class AppController extends ChangeNotifier {
     // Determine health based on behavior
     _isHealthy = _selectedBehavior == BehaviorType.safe;
     _currentState = AppState.healthResult;
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -68,6 +93,7 @@ class AppController extends ChangeNotifier {
       // Risky behavior (HIV+) → go to decision screen
       _currentState = AppState.decision;
     }
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -82,6 +108,7 @@ class AppController extends ChangeNotifier {
       // Stop risky → recovery path
       _currentState = AppState.vrRecovery;
     }
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -95,6 +122,7 @@ class AppController extends ChangeNotifier {
   void completeRecovery() {
     // Proceed to final education
     _currentState = AppState.finalEducation;
+    _updateOrientation();
     notifyListeners();
   }
 
@@ -119,17 +147,42 @@ class AppController extends ChangeNotifier {
     return VideoAssets.getOutcomeVideo(_continueRiskyBehavior!);
   }
 
+  /// Handle back navigation
+  void goBack() {
+    switch (_currentState) {
+      case AppState.roleSelection:
+        _currentState = AppState.mainMenu;
+        break;
+      case AppState.behaviorSelection:
+        _selectedRole = null; // Clear role selection
+        _currentState = AppState.roleSelection;
+        break;
+      case AppState.decision:
+        _selectedBehavior = null; // Clear behavior selection
+        _currentState = AppState.behaviorSelection;
+        break;
+      default:
+        // For other states (like during VR or final result),
+        // we might not want to allow simple back navigation or handle it differently
+        break;
+    }
+    _updateOrientation();
+    notifyListeners();
+  }
+
   /// Get role display name
   String getRoleDisplayName() {
     if (_selectedRole == null) return '';
-    return _selectedRole == UserRole.gay ? 'Gay' : 'Sex Worker (PSK)';
+    return _selectedRole == UserRole.gay
+        ? 'Laki-laki'
+        : 'Perempuan'; // Replaced PSK for universal appeal
   }
 
   /// Get behavior display name
   String getBehaviorDisplayName() {
     if (_selectedBehavior == null) return '';
     return _selectedBehavior == BehaviorType.risky
-        ? 'Risky Behavior'
-        : 'Safe Behavior';
+        ? 'Tanpa Pengaman'
+        : 'Pakai Pengaman'; // Replaced Kondom
   }
 }

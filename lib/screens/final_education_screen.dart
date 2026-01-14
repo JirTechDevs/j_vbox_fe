@@ -15,89 +15,114 @@ class FinalEducationScreen extends StatelessWidget {
     final controller = context.read<AppController>();
     final soundManager = SoundManager();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Success Icon
-                  const Icon(
-                    Icons.school,
-                    size: 100,
-                    color: AppColors.success,
-                  ),
-                  const SizedBox(height: 32),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        controller
+            .goBack(); // Will allow exit or restart from here depending on logic
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.cosmicBackground,
+          ),
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Success Icon
+                      const Icon(
+                        Icons.school,
+                        size: 100,
+                        color: AppColors.success,
+                      ),
+                      const SizedBox(height: 32),
 
-                  // Title
-                  const Text(
-                    'Stay Informed, Stay Safe',
-                    style: AppTextStyles.title,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
+                      // Title
+                      const Text(
+                        'Stay Informed, Stay Safe',
+                        style: AppTextStyles.title,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
 
-                  // Educational Content
-                  _buildEducationSection(
-                    icon: Icons.info_outline,
-                    title: 'Prevention is Key',
-                    content:
-                        'Use protection consistently, get tested regularly, and know your status.',
-                  ),
-                  const SizedBox(height: 24),
+                      // Educational Content
+                      _buildEducationSection(
+                        icon: Icons.info_outline,
+                        title: 'Prevention is Key',
+                        content:
+                            'Use protection consistently, get tested regularly, and know your status.',
+                      ),
+                      const SizedBox(height: 24),
 
-                  _buildEducationSection(
-                    icon: Icons.favorite,
-                    title: 'Treatment is Available',
-                    content:
-                        'Early detection and antiretroviral therapy (ART) can help people with HIV live long, healthy lives.',
-                  ),
-                  const SizedBox(height: 24),
+                      _buildEducationSection(
+                        icon: Icons.favorite,
+                        title: 'Treatment is Available',
+                        content:
+                            'Early detection and antiretroviral therapy (ART) can help people with HIV live long, healthy lives.',
+                      ),
+                      const SizedBox(height: 24),
 
-                  _buildEducationSection(
-                    icon: Icons.people,
-                    title: 'Support Exists',
-                    content:
-                        'Reach out to healthcare providers, support groups, and community organizations for help.',
-                  ),
-                  const SizedBox(height: 48),
+                      _buildEducationSection(
+                        icon: Icons.people,
+                        title: 'Support Exists',
+                        content:
+                            'Reach out to healthcare providers, support groups, and community organizations for help.',
+                      ),
+                      const SizedBox(height: 48),
 
-                  // Action Buttons
-                  SizedBox(
-                    width: AppDimensions.buttonWidth,
-                    height: AppDimensions.buttonHeight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        soundManager.playButtonPress();
-                        controller.goToMainMenu();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.textPrimary,
-                        shape: RoundedRectangleBorder(
+                      // Action Buttons
+                      Container(
+                        width: AppDimensions.buttonWidth,
+                        height: AppDimensions.buttonHeight,
+                        decoration: BoxDecoration(
+                          gradient: AppGradients.primaryButton,
                           borderRadius:
                               BorderRadius.circular(AppDimensions.buttonRadius),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.5),
+                              offset: const Offset(0, 4),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
-                        elevation: 8,
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.replay, size: 28),
-                          SizedBox(width: 12),
-                          Text(
-                            'RESTART',
-                            style: AppTextStyles.buttonText,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            soundManager.playButtonPress();
+                            controller.goToMainMenu();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: AppColors.textPrimary,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  AppDimensions.buttonRadius),
+                            ),
                           ),
-                        ],
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.replay, size: 28),
+                              SizedBox(width: 12),
+                              Text(
+                                'RESTART',
+                                style: AppTextStyles.buttonText,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

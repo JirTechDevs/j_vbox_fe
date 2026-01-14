@@ -16,52 +16,59 @@ class MainMenuScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // App Logo/Title
-              const Icon(
-                Icons.health_and_safety,
-                size: 120,
-                color: AppColors.primary,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppGradients.cosmicBackground,
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // App Logo/Title
+                  const Icon(
+                    Icons.health_and_safety,
+                    size: 100,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // App Title
+                  const Text(
+                    'VR Box Education',
+                    style: AppTextStyles.title,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Subtitle
+                  Text(
+                    'HIV/AIDS Prevention',
+                    style: AppTextStyles.bodyText.copyWith(
+                      color: AppColors.secondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Play Button
+                  _buildPlayButton(context, controller, soundManager),
+
+                  const SizedBox(height: 24),
+
+                  // Info text
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 32),
+                  //   child: Text(
+                  //     'Make choices that shape your future',
+                  //     style: AppTextStyles.bodyText,
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
+                ],
               ),
-              const SizedBox(height: 24),
-
-              // App Title
-              const Text(
-                'VR Box Education',
-                style: AppTextStyles.title,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-
-              // Subtitle
-              Text(
-                'HIV/AIDS Prevention',
-                style: AppTextStyles.bodyText.copyWith(
-                  color: AppColors.secondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 64),
-
-              // Play Button
-              _buildPlayButton(context, controller, soundManager),
-
-              const SizedBox(height: 32),
-
-              // Info text
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  'Make choices that shape your future',
-                  style: AppTextStyles.bodyText,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -73,21 +80,32 @@ class MainMenuScreen extends StatelessWidget {
     AppController controller,
     SoundManager soundManager,
   ) {
-    return SizedBox(
+    return Container(
       width: AppDimensions.buttonWidth,
       height: AppDimensions.buttonHeight,
+      decoration: BoxDecoration(
+        gradient: AppGradients.primaryButton,
+        borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.5),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () {
           soundManager.playButtonPress();
           controller.startScenario();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: Colors.transparent,
           foregroundColor: AppColors.textPrimary,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           ),
-          elevation: 8,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
