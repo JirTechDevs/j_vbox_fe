@@ -1,64 +1,78 @@
 import 'package:flutter/material.dart';
 
-/// Application colors - VR-friendly palette
+/// Application colors - Professional & Neutral Palette
 class AppColors {
-  // Dark theme for VR comfort
-  static const Color background = Color(0xFF0A0E27);
-  static const Color surface = Color(0xFF1A1F3A);
-  static const Color primary = Color(0xFF6C63FF);
-  static const Color secondary = Color(0xFF4ECDC4);
-  static const Color accent = Color(0xFFFF6B9D);
-  static const Color success = Color(0xFF45B7D1);
-  static const Color warning = Color(0xFFFFA07A);
-  static const Color danger = Color(0xFFFF6B6B);
-  static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFFB8B8D1);
+  // Light theme for professional/medical feel
+  static const Color background = Color(0xFFF4F6F8); // Warm Off-White
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color primary =
+      Color(0xFF4FA3A5); // Soft Teal / Medical Blue-Green
+  static const Color secondary = Color(0xFF6C8EBF); // Muted Blue
+  static const Color accent = Color(0xFFE07A5F); // Muted Coral Red
+  static const Color success = Color(0xFF6DBE8B); // Soft Green
+  static const Color warning = Color(0xFFE07A5F); // Muted Coral Red
+  static const Color danger =
+      Color(0xFFE07A5F); // Using Muted Coral for danger too
+  static const Color textPrimary = Color(0xFF2E2E2E); // Dark Neutral Grey
+  static const Color textSecondary =
+      Color(0xFF6C8EBF); // Using Muted Blue for secondary text
 }
 
 /// Application Gradients
 class AppGradients {
-  /// Universal Cosmic Background (Deep Purple -> Navy)
-  /// Neutral for both genders, not empty like black
+  /// Universal Background (Warm Off-White)
+  /// Kept as gradient for compatibility, but subtler
   static const LinearGradient cosmicBackground = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFF2E1C59), // Deep Purple
-      Color(0xFF0F1229), // Rich Navy
+      Color(0xFFF4F6F8), // Warm Off-White
+      Color(0xFFE8EEF1), // Slightly darker grey-blue at bottom
     ],
   );
 
-  /// Primary Button Gradient (Purple -> Blue)
+  /// Primary Button Gradient (Soft Teal)
   static const LinearGradient primaryButton = LinearGradient(
-    colors: [Color(0xFF6C63FF), Color(0xFF4834D4)],
+    colors: [Color(0xFF4FA3A5), Color(0xFF42898B)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Secondary Button Gradient (Teal -> Emerald for Safe)
+  /// Secondary Button Gradient (Muted Blue)
+  static const LinearGradient secondaryButton = LinearGradient(
+    colors: [Color(0xFF6C8EBF), Color(0xFF5A79A6)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  /// Safe Button Gradient (Soft Green)
   static const LinearGradient safeButton = LinearGradient(
-    colors: [Color(0xFF4ECDC4), Color(0xFF26DE81)],
+    colors: [Color(0xFF6DBE8B), Color(0xFF5AA876)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Danger/Risky Button Gradient (Bright Red -> Deep Crimson)
+  /// Risky Button Gradient (Muted Coral Red)
   static const LinearGradient riskyButton = LinearGradient(
-    colors: [Color(0xFFFF5252), Color(0xFFD50000)],
+    colors: [Color(0xFFE07A5F), Color(0xFFC96D55)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Pink/Magenta Button Gradient (Feminine Role)
+  /// Pink/Magenta Button Gradient (Feminine Role - Adjusted to Palette)
+  /// Using a softer pink that harmonizes with the new palette
   static const LinearGradient pinkButton = LinearGradient(
-    colors: [Color(0xFFE91E63), Color(0xFFFF4081)],
+    colors: [
+      Color(0xFFE91E63),
+      Color(0xFFC2185B)
+    ], // Kept distinctly pink but slightly muted
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  /// Neutral Button Gradient (Greyish)
+  /// Neutral Button Gradient (Grey)
   static const LinearGradient neutralButton = LinearGradient(
-    colors: [Color(0xFF485460), Color(0xFF1E272E)],
+    colors: [Color(0xFF95A5A6), Color(0xFF7F8C8D)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -66,57 +80,66 @@ class AppGradients {
 
 /// Text styles
 class AppTextStyles {
+  // Font Family: Inter
+  static const String fontFamily = 'Inter';
+
   static const TextStyle title = TextStyle(
-    fontSize: 32,
-    fontWeight: FontWeight.bold,
+    fontFamily: fontFamily,
+    fontSize: 24, // Mobile-safe Headline (20-24sp)
+    fontWeight: FontWeight.w600, // SemiBold
     color: AppColors.textPrimary,
     shadows: [
       Shadow(
-        blurRadius: 10.0,
-        color: Colors.black54,
-        offset: Offset(2.0, 2.0),
+        blurRadius: 2.0,
+        color: Colors.black12,
+        offset: Offset(1.0, 1.0),
       ),
     ],
-    letterSpacing: 1.2,
+    letterSpacing: 0.5,
   );
 
   static const TextStyle buttonText = TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+    fontFamily: fontFamily,
+    fontSize: 18, // Button >= 16sp
+    fontWeight: FontWeight.w600, // SemiBold
+    color: Colors.white,
     shadows: [
       Shadow(
-        blurRadius: 4.0,
-        color: Colors.black45,
+        blurRadius: 2.0,
+        color: Colors.black26,
         offset: Offset(1.0, 1.0),
       ),
     ],
   );
 
   static const TextStyle buttonTextBehaviour = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+    fontFamily: fontFamily,
+    fontSize: 16, // Button >= 16sp
+    fontWeight: FontWeight.w500, // Medium
+    color: Colors.white,
     shadows: [
       Shadow(
-        blurRadius: 4.0,
-        color: Colors.black45,
+        blurRadius: 2.0,
+        color: Colors.black26,
         offset: Offset(1.0, 1.0),
       ),
     ],
   );
 
   static const TextStyle bodyText = TextStyle(
-    fontSize: 18,
-    color: AppColors.textSecondary,
+    fontFamily: fontFamily,
+    fontSize: 16, // Body 14-16sp
+    fontWeight: FontWeight.w400, // Regular
+    color: AppColors.textPrimary,
     height: 1.5,
   );
 
   static const TextStyle heading = TextStyle(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
+    fontFamily: fontFamily,
+    fontSize: 20, // Mobile-safe Headline (20-24sp)
+    fontWeight: FontWeight.w600, // SemiBold
     color: AppColors.textPrimary,
-    letterSpacing: 1.0,
+    letterSpacing: 0.5,
   );
 }
 

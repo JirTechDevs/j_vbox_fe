@@ -136,7 +136,7 @@ class DecisionScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 32),
+            Icon(icon, size: 32, color: Colors.white),
             const SizedBox(width: 12),
             Text(
               label,

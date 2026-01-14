@@ -110,7 +110,7 @@ class FinalEducationScreen extends StatelessWidget {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.replay, size: 28),
+                              Icon(Icons.replay, size: 28, color: Colors.white),
                               SizedBox(width: 12),
                               Text(
                                 'RESTART',

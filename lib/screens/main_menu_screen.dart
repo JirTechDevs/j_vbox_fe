@@ -110,7 +110,7 @@ class MainMenuScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.play_arrow, size: 32),
+            const Icon(Icons.play_arrow, size: 32, color: Colors.white),
             const SizedBox(width: 12),
             const Text(
               'PLAY',

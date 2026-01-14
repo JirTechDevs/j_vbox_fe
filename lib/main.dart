@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'controllers/app_controller.dart';
 import 'models/app_enums.dart';
 import 'screens/main_menu_screen.dart';
+import 'screens/information_screen.dart';
 import 'screens/role_selection_screen.dart';
 import 'screens/behavior_selection_screen.dart';
 import 'screens/vr_time_lapse_screen.dart';
@@ -74,6 +75,9 @@ class AppNavigator extends StatelessWidget {
         switch (controller.currentState) {
           case AppState.mainMenu:
             return const MainMenuScreen();
+
+          case AppState.information:
+            return const InformationScreen();
 
           case AppState.roleSelection:
             return const RoleSelectionScreen();

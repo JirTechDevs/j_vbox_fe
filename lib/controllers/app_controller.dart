@@ -52,8 +52,15 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Start scenario - go to role selection
+  /// Start scenario - go to information screen
   void startScenario() {
+    _currentState = AppState.information;
+    _updateOrientation();
+    notifyListeners();
+  }
+
+  /// Proceed from information to role selection
+  void proceedFromInformation() {
     _currentState = AppState.roleSelection;
     _updateOrientation();
     notifyListeners();
@@ -150,8 +157,11 @@ class AppController extends ChangeNotifier {
   /// Handle back navigation
   void goBack() {
     switch (_currentState) {
-      case AppState.roleSelection:
+      case AppState.information:
         _currentState = AppState.mainMenu;
+        break;
+      case AppState.roleSelection:
+        _currentState = AppState.information;
         break;
       case AppState.behaviorSelection:
         _selectedRole = null; // Clear role selection

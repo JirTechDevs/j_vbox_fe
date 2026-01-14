@@ -2,6 +2,7 @@
 /// Represents the 8 states of the application flow
 enum AppState {
   mainMenu, // State 0: Main menu with play button
+  information, // State 0.5: HIV Information Screen
   roleSelection, // State 1: Select Gay or PSK
   behaviorSelection, // State 2: Select Risky or Safe behavior
   vrTimeLapse, // State 3: VR mode - 5 year time lapse

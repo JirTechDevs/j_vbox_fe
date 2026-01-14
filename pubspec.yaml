@@ -33,3 +33,8 @@ flutter:
     - assets/videos/
     # Sound effects
     - assets/sounds/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf
