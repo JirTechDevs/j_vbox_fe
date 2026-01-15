@@ -34,45 +34,39 @@ class BehaviorSelectionScreen extends StatelessWidget {
                 children: [
                   // Title
                   const Text(
-                    'Pilih Tindakan',
+                    'Pilihan Keputusan',
                     style: AppTextStyles.title,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Role context
-                  Text(
-                    'Sebagai ${controller.getRoleDisplayName()}',
-                    style: AppTextStyles.bodyText.copyWith(
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.bold,
-                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 64),
 
-                  // Safe behavior option
-                  _buildBehaviorButton(
-                    context,
-                    controller,
-                    soundManager,
-                    label: 'Pakai Pengaman',
-                    behavior: BehaviorType.safe,
-                    icon: Icons.health_and_safety,
-                    gradient: AppGradients.safeButton,
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Risky behavior option (Red)
+                      _buildBehaviorButton(
+                        context,
+                        controller,
+                        soundManager,
+                        label: 'Tidak Pakai Pengaman',
+                        behavior: BehaviorType.risky,
+                        icon: Icons.warning_amber_rounded,
+                        color: AppColors.alertRed,
+                      ),
 
-                  const SizedBox(height: 24),
+                      const SizedBox(width: 48),
 
-                  // Risky behavior option
-                  _buildBehaviorButton(
-                    context,
-                    controller,
-                    soundManager,
-                    label: 'Tanpa Pengaman',
-                    behavior: BehaviorType.risky,
-                    icon: Icons.warning,
-                    gradient: AppGradients.riskyButton,
+                      // Safe behavior option (Green)
+                      _buildBehaviorButton(
+                        context,
+                        controller,
+                        soundManager,
+                        label: 'Pakai Pengaman',
+                        behavior: BehaviorType.safe,
+                        icon: Icons.shield,
+                        color: AppColors.safetyGreen,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -90,48 +84,84 @@ class BehaviorSelectionScreen extends StatelessWidget {
     required String label,
     required BehaviorType behavior,
     required IconData icon,
-    required Gradient gradient,
+    required Color color,
   }) {
     return Container(
-      width: AppDimensions.buttonWidth,
-      height: AppDimensions.buttonHeight,
+      width: 250,
+      height: 200,
       decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        color: Colors.black.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color, width: 2), // Neon border
         boxShadow: [
+          // Multiple shadows for neon glow effect
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: const Offset(0, 4),
+            color: color.withOpacity(0.6),
             blurRadius: 8,
-          ),
+            spreadRadius: 2,
+          ), // Inner/Tight glow
+          BoxShadow(
+            color: color.withOpacity(0.4),
+            blurRadius: 24,
+            spreadRadius: 4,
+          ), // Outer/Soft glow
         ],
       ),
-      child: ElevatedButton(
-        onPressed: () {
-          soundManager.playButtonPress();
-          controller.selectBehavior(behavior);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.textPrimary,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: Colors.white),
-            const SizedBox(width: 12),
-            Flexible(
-              child: Text(
-                label,
-                style: AppTextStyles.buttonTextBehaviour,
-                textAlign: TextAlign.center,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            soundManager.playButtonPress();
+            controller.selectBehavior(behavior);
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Icon with glow
+              Icon(
+                icon,
+                size: 80,
+                color: color,
+                shadows: [
+                  Shadow(color: color, blurRadius: 15),
+                  Shadow(color: color, blurRadius: 30),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              // Text container with glow
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.5),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  label,
+                  style: AppTextStyles.buttonText.copyWith(
+                    fontSize: 18, // Slightly smaller text for longer label
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      const Shadow(
+                        color: Colors.black26,
+                        blurRadius: 2,
+                        offset: Offset(1, 1),
+                      )
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

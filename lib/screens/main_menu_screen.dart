@@ -35,37 +35,39 @@ class MainMenuScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // App Title
-                  const Text(
-                    'VR Box Education',
-                    style: AppTextStyles.title,
+                  Text(
+                    'Simulasi Virtual Edukasi HIV/AIDS',
+                    style: AppTextStyles.title.copyWith(
+                      color: AppColors.primary,
+                      shadows: [
+                        const Shadow(
+                          color: AppColors.primary,
+                          blurRadius: 10,
+                        ),
+                        const Shadow(
+                          color: AppColors.primary,
+                          blurRadius: 20,
+                        ),
+                      ],
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
 
                   // Subtitle
                   Text(
-                    'HIV/AIDS Prevention',
+                    'Siap masuk ke dunia yang berbeda? Ayo lihat pengalaman Virtual Reality sekarang!',
                     style: AppTextStyles.bodyText.copyWith(
-                      color: AppColors.secondary,
+                      color: AppColors.textPrimary.withOpacity(0.8),
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 48),
 
                   // Play Button
                   _buildPlayButton(context, controller, soundManager),
 
                   const SizedBox(height: 24),
-
-                  // Info text
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 32),
-                  //   child: Text(
-                  //     'Make choices that shape your future',
-                  //     style: AppTextStyles.bodyText,
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -80,43 +82,60 @@ class MainMenuScreen extends StatelessWidget {
     AppController controller,
     SoundManager soundManager,
   ) {
+    final color = AppColors.primary;
     return Container(
-      width: AppDimensions.buttonWidth,
-      height: AppDimensions.buttonHeight,
+      width: AppDimensions.buttonWidth + 50,
+      height: 80,
       decoration: BoxDecoration(
-        gradient: AppGradients.primaryButton,
+        color: Colors.black.withOpacity(0.6),
         borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        border: Border.all(color: color, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.5),
-            offset: const Offset(0, 4),
-            blurRadius: 10,
+            color: color.withOpacity(0.6),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: color.withOpacity(0.4),
+            blurRadius: 24,
+            spreadRadius: 4,
           ),
         ],
       ),
-      child: ElevatedButton(
-        onPressed: () {
-          soundManager.playButtonPress();
-          controller.startScenario();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.textPrimary,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            soundManager.playButtonPress();
+            controller.startScenario();
+          },
+          borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.play_arrow,
+                size: 40,
+                color: color,
+                shadows: [
+                  Shadow(color: color, blurRadius: 15),
+                  Shadow(color: color, blurRadius: 30),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'MULAI PERJALANAN',
+                style: AppTextStyles.buttonText.copyWith(
+                  color: color,
+                  fontSize: 22,
+                  shadows: [
+                    Shadow(color: color, blurRadius: 10),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.play_arrow, size: 32, color: Colors.white),
-            const SizedBox(width: 12),
-            const Text(
-              'PLAY',
-              style: AppTextStyles.buttonText,
-            ),
-          ],
         ),
       ),
     );

@@ -24,21 +24,11 @@ class AppController extends ChangeNotifier {
 
   /// Private method to update screen orientation based on state
   void _updateOrientation() {
-    // VR states require landscape
-    if (_currentState == AppState.vrTimeLapse ||
-        _currentState == AppState.vrNegativeOutcome ||
-        _currentState == AppState.vrRecovery) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    } else {
-      // Menu and text-heavy screens use portrait
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    }
+    // All states now require landscape
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
   /// Navigate to main menu (reset state)

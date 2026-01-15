@@ -2,20 +2,32 @@ import 'package:flutter/material.dart';
 
 /// Application colors - Professional & Neutral Palette
 class AppColors {
-  // Light theme for professional/medical feel
-  static const Color background = Color(0xFFF4F6F8); // Warm Off-White
-  static const Color surface = Color(0xFFFFFFFF);
+  // Dark theme for neon aesthetic
+  static const Color background = Color(0xFF13092D); // Deep Space Violet
+  static const Color surface = Color(0xFF2D124B); // Nebula Purple (lighter)
   static const Color primary =
-      Color(0xFF4FA3A5); // Soft Teal / Medical Blue-Green
+      Color(0xFF00F0FF); // Electric Cyan (Neon Primary)
   static const Color secondary = Color(0xFF6C8EBF); // Muted Blue
-  static const Color accent = Color(0xFFE07A5F); // Muted Coral Red
-  static const Color success = Color(0xFF6DBE8B); // Soft Green
-  static const Color warning = Color(0xFFE07A5F); // Muted Coral Red
-  static const Color danger =
-      Color(0xFFE07A5F); // Using Muted Coral for danger too
-  static const Color textPrimary = Color(0xFF2E2E2E); // Dark Neutral Grey
+  static const Color accent = Color(0xFFFF007F); // Hot Magenta
+  static const Color success = Color(0xFF00FF51); // Safety Green
+  static const Color warning = Color(0xFFFF2A2A); // Alert Red
+  static const Color danger = Color(0xFFFF2A2A);
+  static const Color textPrimary = Color(0xFFFFFFFF); // White for dark bg
   static const Color textSecondary =
-      Color(0xFF6C8EBF); // Using Muted Blue for secondary text
+      Color(0xFFB0C7D9); // Light Blue-Grey for secondary text
+
+  // The Base (Background)
+  static const Color deepSpaceViolet = Color(0xFF13092D); // The dark void
+  static const Color nebulaPurple =
+      Color(0xFF2D124B); // The lighter ambient background
+
+  // Palette A (Image 1 - Relationships)
+  static const Color electricCyan = Color(0xFF00F0FF); // Gay
+  static const Color hotMagenta = Color(0xFFFF007F); // PSK
+
+  // Palette B (Image 2 - Status/Action)
+  static const Color alertRed = Color(0xFFFF2A2A); // Warning
+  static const Color safetyGreen = Color(0xFF00FF51); // Safe
 }
 
 /// Application Gradients
@@ -26,8 +38,8 @@ class AppGradients {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color(0xFFF4F6F8), // Warm Off-White
-      Color(0xFFE8EEF1), // Slightly darker grey-blue at bottom
+      AppColors.deepSpaceViolet, // The dark void
+      AppColors.nebulaPurple, // The lighter ambient background
     ],
   );
 

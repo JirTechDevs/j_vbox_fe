@@ -106,44 +106,59 @@ class DecisionScreen extends StatelessWidget {
     required IconData icon,
     required Gradient gradient,
   }) {
+    final color = continueRisky ? AppColors.alertRed : AppColors.safetyGreen;
     return Container(
       width: AppDimensions.buttonWidth,
       height: AppDimensions.buttonHeight,
       decoration: BoxDecoration(
-        gradient: gradient,
+        color: Colors.black.withOpacity(0.6),
         borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+        border: Border.all(color: color, width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: const Offset(0, 4),
+            color: color.withOpacity(0.6),
             blurRadius: 8,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: color.withOpacity(0.4),
+            blurRadius: 24,
+            spreadRadius: 4,
           ),
         ],
       ),
-      child: ElevatedButton(
-        onPressed: () {
-          soundManager.playButtonPress();
-          controller.makeDecision(continueRisky);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.textPrimary,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            soundManager.playButtonPress();
+            controller.makeDecision(continueRisky);
+          },
+          borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: color,
+                shadows: [
+                  Shadow(color: color, blurRadius: 10),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: AppTextStyles.buttonText.copyWith(
+                  color: color,
+                  shadows: [
+                    Shadow(color: color, blurRadius: 5),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: Colors.white),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: AppTextStyles.buttonText,
-              textAlign: TextAlign.center,
-            ),
-          ],
         ),
       ),
     );

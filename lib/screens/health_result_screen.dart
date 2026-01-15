@@ -34,6 +34,22 @@ class HealthResultScreen extends StatelessWidget {
                     isHealthy ? Icons.check_circle : Icons.cancel,
                     size: 120,
                     color: isHealthy ? AppColors.success : AppColors.danger,
+                    shadows: [
+                      Shadow(
+                        color:
+                            (isHealthy ? AppColors.success : AppColors.danger)
+                                .withOpacity(0.5),
+                        blurRadius: 20,
+                        offset: const Offset(0, 0),
+                      ),
+                      Shadow(
+                        color:
+                            (isHealthy ? AppColors.success : AppColors.danger)
+                                .withOpacity(0.3),
+                        blurRadius: 40,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32),
 
@@ -42,6 +58,15 @@ class HealthResultScreen extends StatelessWidget {
                     isHealthy ? 'Healthy!' : 'HIV Positive',
                     style: AppTextStyles.title.copyWith(
                       color: isHealthy ? AppColors.success : AppColors.danger,
+                      fontSize: 40,
+                      shadows: [
+                        Shadow(
+                          color:
+                              (isHealthy ? AppColors.success : AppColors.danger)
+                                  .withOpacity(0.5),
+                          blurRadius: 10,
+                        ),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -52,7 +77,10 @@ class HealthResultScreen extends StatelessWidget {
                     isHealthy
                         ? 'Your safe behavior choices have kept you healthy. Continue practicing safe habits!'
                         : 'Your risky behavior choices have led to HIV infection. Early detection and treatment are crucial.',
-                    style: AppTextStyles.bodyText,
+                    style: AppTextStyles.bodyText.copyWith(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -71,36 +99,49 @@ class HealthResultScreen extends StatelessWidget {
                   // Continue Button
                   Container(
                     width: AppDimensions.buttonWidth,
-                    height: AppDimensions.buttonHeight,
+                    height: 80,
                     decoration: BoxDecoration(
-                      gradient: AppGradients.primaryButton,
+                      color: Colors.black.withOpacity(0.6),
                       borderRadius:
                           BorderRadius.circular(AppDimensions.buttonRadius),
+                      border: Border.all(color: AppColors.primary, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.5),
-                          offset: const Offset(0, 4),
-                          blurRadius: 10,
+                          color: AppColors.primary.withOpacity(0.6),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.4),
+                          blurRadius: 24,
+                          spreadRadius: 4,
                         ),
                       ],
                     ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        soundManager.playButtonPress();
-                        controller.proceedFromHealthResult();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: AppColors.textPrimary,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppDimensions.buttonRadius),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          soundManager.playButtonPress();
+                          controller.proceedFromHealthResult();
+                        },
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.buttonRadius),
+                        child: Center(
+                          child: Text(
+                            'CONTINUE',
+                            style: AppTextStyles.buttonText.copyWith(
+                              color: AppColors.primary,
+                              fontSize: 22,
+                              shadows: [
+                                const Shadow(
+                                  color: AppColors.primary,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'CONTINUE',
-                        style: AppTextStyles.buttonText,
                       ),
                     ),
                   ),

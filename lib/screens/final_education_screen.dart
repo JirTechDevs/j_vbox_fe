@@ -41,13 +41,27 @@ class FinalEducationScreen extends StatelessWidget {
                         Icons.school,
                         size: 100,
                         color: AppColors.success,
+                        shadows: [
+                          Shadow(
+                            color: AppColors.success,
+                            blurRadius: 20,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 32),
 
                       // Title
-                      const Text(
+                      Text(
                         'Stay Informed, Stay Safe',
-                        style: AppTextStyles.title,
+                        style: AppTextStyles.title.copyWith(
+                          color: AppColors.primary,
+                          shadows: [
+                            const Shadow(
+                              color: AppColors.primary,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 32),
@@ -80,43 +94,50 @@ class FinalEducationScreen extends StatelessWidget {
                       // Action Buttons
                       Container(
                         width: AppDimensions.buttonWidth,
-                        height: AppDimensions.buttonHeight,
+                        height: 80,
                         decoration: BoxDecoration(
-                          gradient: AppGradients.primaryButton,
+                          color: Colors.black.withOpacity(0.6),
                           borderRadius:
                               BorderRadius.circular(AppDimensions.buttonRadius),
+                          border:
+                              Border.all(color: AppColors.primary, width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.5),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
+                              color: AppColors.primary.withOpacity(0.6),
+                              blurRadius: 8,
+                              spreadRadius: 2,
                             ),
                           ],
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            soundManager.playButtonPress();
-                            controller.goToMainMenu();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: AppColors.textPrimary,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  AppDimensions.buttonRadius),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              soundManager.playButtonPress();
+                              controller.goToMainMenu();
+                            },
+                            borderRadius: BorderRadius.circular(
+                                AppDimensions.buttonRadius),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.replay,
+                                    size: 32, color: AppColors.primary),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'RESTART',
+                                  style: AppTextStyles.buttonText.copyWith(
+                                    color: AppColors.primary,
+                                    fontSize: 22,
+                                    shadows: [
+                                      const Shadow(
+                                          color: AppColors.primary,
+                                          blurRadius: 8),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.replay, size: 28, color: Colors.white),
-                              SizedBox(width: 12),
-                              Text(
-                                'RESTART',
-                                style: AppTextStyles.buttonText,
-                              ),
-                            ],
                           ),
                         ),
                       ),
@@ -139,16 +160,24 @@ class FinalEducationScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Colors.black.withOpacity(0.6),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.secondary.withOpacity(0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.secondary.withOpacity(0.1),
+            blurRadius: 8,
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             icon,
-            color: AppColors.secondary,
+            color: AppColors.primary,
             size: 32,
+            shadows: const [Shadow(color: AppColors.primary, blurRadius: 8)],
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -157,12 +186,18 @@ class FinalEducationScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTextStyles.heading.copyWith(fontSize: 20),
+                  style: AppTextStyles.heading.copyWith(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   content,
-                  style: AppTextStyles.bodyText.copyWith(fontSize: 16),
+                  style: AppTextStyles.bodyText.copyWith(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),
