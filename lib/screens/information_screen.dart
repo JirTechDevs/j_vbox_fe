@@ -163,87 +163,94 @@ class _InformationPageViewState extends State<_InformationPageView> {
 
   Widget _buildDefinitionPage() {
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Apa itu HIV?',
-                style: AppTextStyles.title.copyWith(
-                  color: AppColors.primary,
-                  shadows: [
-                    const Shadow(
-                      color: AppColors.primary,
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Apa itu HIV?',
+              style: AppTextStyles.title.copyWith(
+                color: AppColors.primary,
+                shadows: [
+                  const Shadow(
+                    color: AppColors.primary,
+                    blurRadius: 10,
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: AppColors.primary.withOpacity(0.5), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.1),
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildDefinitionItem('Human', 'Manusia'),
-                    const SizedBox(height: 12),
-                    _buildDefinitionItem('Immunodeficiency',
-                        'Kelemahan atau kerusakan sistem kekebalan tubuh'),
-                    const SizedBox(height: 12),
-                    _buildDefinitionItem('Virus', 'Virus'),
-                    const SizedBox(height: 16),
-                    const Divider(color: AppColors.secondary),
-                    const SizedBox(height: 16),
-                    RichText(
-                      textAlign: TextAlign.justify,
-                      text: TextSpan(
-                        style: AppTextStyles.bodyText.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                        children: const [
-                          TextSpan(text: 'Artinya, '),
-                          TextSpan(
-                            text: 'Human Immunodeficiency Virus (HIV)',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary),
-                          ),
-                          TextSpan(
-                              text:
-                                  ' adalah virus yang menyerang manusia dan menyebabkan kelemahan atau kerusakan sistem kekebalan tubuh, sehingga tubuh menjadi lebih rentan terhadap berbagai infeksi dan penyakit.'),
-                        ],
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    color: AppColors.primary.withOpacity(0.5), width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.1),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _buildDefinitionItem('Human', 'Manusia')),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 1,
+                        child: _buildDefinitionItem('Immunodeficiency',
+                            'Penurunan sistem kekebalan tubuh'),
                       ),
+                      const SizedBox(width: 8),
+                      Expanded(child: _buildDefinitionItem('Virus', 'Virus')),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(color: AppColors.secondary),
+                  const SizedBox(height: 16),
+                  RichText(
+                    textAlign: TextAlign.justify,
+                    text: TextSpan(
+                      style: AppTextStyles.bodyText.copyWith(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                      children: const [
+                        TextSpan(text: 'Artinya, '),
+                        TextSpan(
+                          text: 'Human Immunodeficiency Virus (HIV)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary),
+                        ),
+                        TextSpan(
+                            text:
+                                ' adalah virus yang menyerang manusia dan menyebabkan penurunan sistem kekebalan tubuh, sehingga rentan terhadap penyakit.'),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildPreventionPage() {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Center(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -260,9 +267,9 @@ class _InformationPageViewState extends State<_InformationPageView> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(20),
@@ -280,16 +287,16 @@ class _InformationPageViewState extends State<_InformationPageView> {
                 children: [
                   _buildPreventionItem('A', 'Abstinence',
                       'Tidak melakukan hubungan seks (bagi yang belum menikah).'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildPreventionItem(
                       'B', 'Be Faithful', 'Saling setia pada satu pasangan.'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildPreventionItem('C', 'Condom',
                       'Gunakan kondom jika berhubungan seks berisiko.'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildPreventionItem('D', 'Don\'t Use Drugs',
                       'Hindari penggunaan narkoba, terutama suntik.'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _buildPreventionItem('E', 'Education',
                       'Cari informasi yang benar tentang HIV/AIDS.'),
                 ],
@@ -308,7 +315,7 @@ class _InformationPageViewState extends State<_InformationPageView> {
           term,
           style: AppTextStyles.heading.copyWith(
             color: AppColors.primary,
-            fontSize: 20,
+            fontSize: 18,
             shadows: [
               const Shadow(color: AppColors.primary, blurRadius: 4),
             ],
@@ -320,7 +327,7 @@ class _InformationPageViewState extends State<_InformationPageView> {
           definition,
           style: AppTextStyles.bodyText.copyWith(
             fontWeight: FontWeight.w500,
-            fontSize: 14,
+            fontSize: 13,
             color: Colors.white70,
           ),
           textAlign: TextAlign.center,
@@ -337,13 +344,17 @@ class _InformationPageViewState extends State<_InformationPageView> {
           '$letter. ',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.primary,
+            fontSize: 18,
             shadows: [const Shadow(color: AppColors.primary, blurRadius: 4)],
           ),
         ),
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: AppTextStyles.bodyText.copyWith(color: Colors.white),
+              style: AppTextStyles.bodyText.copyWith(
+                color: Colors.white,
+                fontSize: 13,
+              ),
               children: [
                 TextSpan(
                   text: '$title: ',
