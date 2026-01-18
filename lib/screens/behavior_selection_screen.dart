@@ -50,7 +50,7 @@ class BehaviorSelectionScreen extends StatelessWidget {
                         soundManager,
                         label: 'Tidak Pakai Pengaman',
                         behavior: BehaviorType.risky,
-                        icon: Icons.warning_amber_rounded,
+                        imagePath: 'assets/images/ic-behave-1.png',
                         color: AppColors.alertRed,
                       ),
 
@@ -63,7 +63,7 @@ class BehaviorSelectionScreen extends StatelessWidget {
                         soundManager,
                         label: 'Pakai Pengaman',
                         behavior: BehaviorType.safe,
-                        icon: Icons.shield,
+                        imagePath: 'assets/images/ic-behave-2.png',
                         color: AppColors.safetyGreen,
                       ),
                     ],
@@ -83,7 +83,8 @@ class BehaviorSelectionScreen extends StatelessWidget {
     SoundManager soundManager, {
     required String label,
     required BehaviorType behavior,
-    required IconData icon,
+    IconData? icon,
+    String? imagePath,
     required Color color,
   }) {
     return Container(
@@ -118,16 +119,36 @@ class BehaviorSelectionScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Icon with glow
-              Icon(
-                icon,
-                size: 80,
-                color: color,
-                shadows: [
-                  Shadow(color: color, blurRadius: 15),
-                  Shadow(color: color, blurRadius: 30),
-                ],
-              ),
+              // Image or Icon with glow
+              if (imagePath != null)
+                Container(
+                  width: 100, // Same size as previous icons + padding
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: color, width: 2),
+                    boxShadow: [
+                      BoxShadow(color: color, blurRadius: 15),
+                      BoxShadow(color: color, blurRadius: 30),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              else if (icon != null)
+                Icon(
+                  icon,
+                  size: 80,
+                  color: color,
+                  shadows: [
+                    Shadow(color: color, blurRadius: 15),
+                    Shadow(color: color, blurRadius: 30),
+                  ],
+                ),
               const SizedBox(height: 24),
               // Text container with glow
               Container(

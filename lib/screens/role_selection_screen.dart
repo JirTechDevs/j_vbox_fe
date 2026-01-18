@@ -43,29 +43,101 @@ class RoleSelectionScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Laki-laki option (Gay - Cyan)
-                      _buildRoleButton(
-                        context,
-                        controller,
-                        soundManager,
-                        label: 'Laki-laki',
-                        role: UserRole.gay,
-                        icon: Icons.man,
-                        color: AppColors.electricCyan,
+                      // Laki-laki option - Tappable Image
+                      GestureDetector(
+                        onTap: () {
+                          soundManager.playButtonPress();
+                          controller.selectRole(UserRole.gay);
+                        },
+                        child: Container(
+                          width: 280,
+                          height: 220,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: AppColors.electricCyan, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.electricCyan.withOpacity(0.6),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: AppColors.electricCyan.withOpacity(0.4),
+                                blurRadius: 24,
+                                spreadRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: Image.asset(
+                              'assets/images/ic-role-1.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
+
+                      // Original button (commented out)
+                      // _buildRoleButton(
+                      //   context,
+                      //   controller,
+                      //   soundManager,
+                      //   label: 'Laki-laki',
+                      //   role: UserRole.gay,
+                      //   imagePath: 'assets/images/choice-1.jpg',
+                      //   color: AppColors.electricCyan,
+                      // ),
 
                       const SizedBox(width: 48),
 
-                      // Perempuan option (PSK - Magenta)
-                      _buildRoleButton(
-                        context,
-                        controller,
-                        soundManager,
-                        label: 'Perempuan',
-                        role: UserRole.psk,
-                        icon: Icons.woman,
-                        color: AppColors.hotMagenta,
+                      // Perempuan option - Tappable Image
+                      GestureDetector(
+                        onTap: () {
+                          soundManager.playButtonPress();
+                          controller.selectRole(UserRole.psk);
+                        },
+                        child: Container(
+                          width: 280,
+                          height: 220,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: AppColors.hotMagenta, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.hotMagenta.withOpacity(0.6),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: AppColors.hotMagenta.withOpacity(0.4),
+                                blurRadius: 24,
+                                spreadRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: Image.asset(
+                              'assets/images/ic-role-2.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
+
+                      // Original button (commented out)
+                      // _buildRoleButton(
+                      //   context,
+                      //   controller,
+                      //   soundManager,
+                      //   label: 'Perempuan',
+                      //   role: UserRole.psk,
+                      //   icon: Icons.woman,
+                      //   color: AppColors.hotMagenta,
+                      // ),
                     ],
                   ),
                 ],
@@ -83,7 +155,8 @@ class RoleSelectionScreen extends StatelessWidget {
     SoundManager soundManager, {
     required String label,
     required UserRole role,
-    required IconData icon,
+    IconData? icon,
+    String? imagePath,
     required Color color,
   }) {
     return Container(
@@ -118,16 +191,36 @@ class RoleSelectionScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Icon with glow
-              Icon(
-                icon,
-                size: 80,
-                color: color,
-                shadows: [
-                  Shadow(color: color, blurRadius: 15),
-                  Shadow(color: color, blurRadius: 30),
-                ],
-              ),
+              // Image or Icon with glow
+              if (imagePath != null)
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: color, width: 2),
+                    boxShadow: [
+                      BoxShadow(color: color, blurRadius: 15),
+                      BoxShadow(color: color, blurRadius: 30),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              else if (icon != null)
+                Icon(
+                  icon,
+                  size: 80,
+                  color: color,
+                  shadows: [
+                    Shadow(color: color, blurRadius: 15),
+                    Shadow(color: color, blurRadius: 30),
+                  ],
+                ),
               const SizedBox(height: 24),
               // Text container with glow
               Container(
