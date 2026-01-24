@@ -221,7 +221,7 @@ class _InformationPageViewState extends State<_InformationPageView> {
             // Rebuild when duration changes to restart/resync animation
             key: ValueKey('hook_$_hookAudioDuration'),
             text:
-                'Menurut kamu, kenapa orang dengan HIV bisa tidak sadar kalau dia terinfeksi? Yuk kita pelajari perjalanan infeksinya!',
+                'Menurut kamu, kenapa orang dengan HIV bisa tidak sadar kalau dirinya terinfeksi? Yuk kita pelajari perjalanan infeksinya!',
 
             // Pass the dynamic duration if available
             duration: _hookAudioDuration,

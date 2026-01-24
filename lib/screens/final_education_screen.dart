@@ -27,19 +27,20 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
     const EducationSlide(
       title: 'Apa itu HIV?',
       content:
-          'Kita mulai dari HIV yang bahasa ilmiahnya Human Immunodeficiency Virus. Maknanya:\n\nHuman → manusia\nImmunodeficiency → lemah/rusaknya sistem imun\nVirus → virus\n\nJadi, HIV adalah virus yang masuk ke dalam tubuh manusia yang menyebabkan lemah dan rusaknya sistem imun, sehingga tubuh menjadi lebih rentan terhadap berbagai infeksi dan penyakit.',
-      audioPath: 'sounds/definisi_hiv.mp3',
+          'Kita mulai dari HIV yang bahasa ilmiahnya Human Immunodeficiency Virus. Jika diartikan per-kata, maknanya:\n\nHuman → manusia\nImmunodeficiency → lemah/rusaknya sistem imun\nVirus → virus\n\nJadi, HIV adalah virus yang masuk ke dalam tubuh manusia yang menyebabkan lemah dan rusaknya sistem imun, sehingga tubuh menjadi lebih rentan terhadap berbagai infeksi dan penyakit.',
+      audioPath: 'sounds/vo/definition.mp3',
     ),
     const EducationSlide(
       title: 'Apa itu AIDS?',
       content:
-          'Lalu, AIDS (Acquired Immunodeficiency Syndrome) maknanya:\n\nAcquired → tertular\nImmunodeficiency → rusaknya sistem imun\nSyndrome → kumpulan gejala\n\nJadi, AIDS adalah kumpulan gejala penyakit akibat rusaknya sistem imun, yang merupakan tahap lanjutan dari infeksi HIV.',
-      audioPath: 'sounds/definisi_aids.mp3',
+          'Lalu, AIDS atau bahasa ilmiahnya Acquired Immunodeficiency Syndrome yang jika diartikan perkata yaitu: :\n\nAcquired → terkena/tertular\nImmunodeficiency → rusak/lemahnya sistem imun\nSyndrome → kumpulan gejala\n\nJadi, AIDS merupakan kumpulan gejala penyakit karena rusak atau lemahnya sistem imun tubuh yang disebabkan oleh penularan suatu penyakit. Dalam hal ini, AIDS merupakan tahap lanjutan dari infeksi virus HIV.',
+      audioPath: 'sounds/vo/definition_aids.mp3',
     ),
     const EducationSlide(
       title: 'Cara Penularan',
-      content: 'Penjelasan tentang cara penularan (penyebab)...',
-      audioPath: 'sounds/edu_cause.mp3', // Placeholder
+      content:
+          'HIV menular melalui hubungan seksual tanpa pengaman, penggunaan jarum suntik bersama, transfusi darah yang tidak aman, serta dari ibu ke bayi saat kehamilan, persalinan, atau menyusui.',
+      audioPath: 'sounds/vo/spread.mp3',
     ),
     const EducationSlide(
       title: 'Tanda & Gejala',
@@ -48,8 +49,9 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
     ),
     const EducationSlide(
       title: 'Pencegahan',
-      content: 'Langkah-langkah pencegahan...',
-      audioPath: 'sounds/edu_prevention.mp3', // Placeholder
+      content:
+          'HIV dapat dicegah dengan menggunakan kondom secara konsisten, tidak berbagi jarum suntik, melakukan tes HIV secara rutin, serta mengonsumsi obat pencegahan dan pengobatan (PrEP dan ARV) sesuai anjuran tenaga kesehatan. Perilaku seksual yang lebih aman dan akses layanan kesehatan yang tepat membantu menurunkan risiko penularan HIV.',
+      audioPath: 'sounds/vo/prevention.mp3', // Placeholder
     ),
     const EducationSlide(
       title: 'Penanganan',
@@ -79,8 +81,10 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
 
   Future<void> _playCurrentSlideAudio() async {
     try {
+      debugPrint('Playing slide audio: Index $_currentIndex');
       await _audioPlayer.stop();
       final slide = _slides[_currentIndex];
+      debugPrint('Audio path: ${slide.audioPath}');
 
       // Reset duration first to clear previous animation state if needed
       if (mounted) {
@@ -90,18 +94,23 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       }
 
       if (slide.audioPath.isNotEmpty) {
+        debugPrint('Setting source...');
         final source = AssetSource(slide.audioPath);
 
         // Load and get duration
         await _audioPlayer.setSource(source);
         final duration = await _audioPlayer.getDuration();
+        debugPrint('Duration found: $duration');
 
         if (mounted) {
           setState(() {
             _currentSlideDuration = duration;
           });
+          debugPrint('Resuming player...');
           await _audioPlayer.resume();
         }
+      } else {
+        debugPrint('Audio path is empty');
       }
     } catch (e) {
       debugPrint('Audio playback error: $e');
