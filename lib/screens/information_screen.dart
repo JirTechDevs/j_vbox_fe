@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../controllers/app_controller.dart';
 import '../utils/constants.dart';
 import '../utils/sound_manager.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 /// State 0.5 - HIV Information Screen
 /// Displays definition of HIV before role selection
@@ -55,13 +56,45 @@ class _InformationPageView extends StatefulWidget {
 
 class _InformationPageViewState extends State<_InformationPageView> {
   final PageController _pageController = PageController();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   int _currentPage = 0;
-  final int _totalPages = 3;
+  final int _totalPages = 2; // Intro + Hook
+  Duration? _hookAudioDuration; // Duration of the hook VO
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fetch duration for the hook if possible, or just wait for page turn
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _playIntroVoiceover() async {
+    try {
+      await _audioPlayer.stop();
+      final source = AssetSource('sounds/vo/intro.mp3');
+
+      // Set source first to get duration
+      await _audioPlayer.setSource(source);
+      final duration = await _audioPlayer.getDuration();
+
+      setState(() {
+        _hookAudioDuration = duration;
+      });
+
+      await _audioPlayer.resume();
+    } catch (e) {
+      debugPrint('Error playing intro VO: $e');
+      // Fallback: Set duration to null to use default speed
+      setState(() {
+        _hookAudioDuration = null;
+      });
+    }
   }
 
   void _nextPage() {
@@ -86,7 +119,6 @@ class _InformationPageViewState extends State<_InformationPageView> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -97,11 +129,17 @@ class _InformationPageViewState extends State<_InformationPageView> {
               setState(() {
                 _currentPage = index;
               });
+
+              // Play VO if on Hook page (Index 1)
+              if (index == 1) {
+                _playIntroVoiceover();
+              } else {
+                _audioPlayer.stop();
+              }
             },
             children: [
               _buildDisclaimerPage(),
-              _buildDefinitionPage(),
-              _buildPreventionPage(),
+              _buildHookPage(),
             ],
           ),
         ),
@@ -161,212 +199,43 @@ class _InformationPageViewState extends State<_InformationPageView> {
     );
   }
 
-  Widget _buildDefinitionPage() {
+  Widget _buildHookPage() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Apa itu HIV?',
-              style: AppTextStyles.title.copyWith(
-                color: AppColors.primary,
-                shadows: [
-                  const Shadow(
-                    color: AppColors.primary,
-                    blurRadius: 10,
-                  ),
-                ],
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(24),
+            border:
+                Border.all(color: AppColors.primary.withOpacity(0.5), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.1),
+                blurRadius: 15,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5), width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.1),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: _buildDefinitionItem('Human', 'Manusia')),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        flex: 1,
-                        child: _buildDefinitionItem('Immunodeficiency',
-                            'Penurunan sistem kekebalan tubuh'),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(child: _buildDefinitionItem('Virus', 'Virus')),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const Divider(color: AppColors.secondary),
-                  const SizedBox(height: 16),
-                  RichText(
-                    textAlign: TextAlign.justify,
-                    text: TextSpan(
-                      style: AppTextStyles.bodyText.copyWith(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                      children: const [
-                        TextSpan(text: 'Artinya, '),
-                        TextSpan(
-                          text: 'Human Immunodeficiency Virus (HIV)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary),
-                        ),
-                        TextSpan(
-                            text:
-                                ' adalah virus yang menyerang manusia dan menyebabkan penurunan sistem kekebalan tubuh, sehingga rentan terhadap penyakit.'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPreventionPage() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Pencegahan (ABCDE)',
-              style: AppTextStyles.title.copyWith(
-                color: AppColors.primary,
-                shadows: [
-                  const Shadow(
-                    color: AppColors.primary,
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5), width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.1),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildPreventionItem('A', 'Abstinence',
-                      'Tidak melakukan hubungan seks (bagi yang belum menikah).'),
-                  const SizedBox(height: 10),
-                  _buildPreventionItem(
-                      'B', 'Be Faithful', 'Saling setia pada satu pasangan.'),
-                  const SizedBox(height: 10),
-                  _buildPreventionItem('C', 'Condom',
-                      'Gunakan kondom jika berhubungan seks berisiko.'),
-                  const SizedBox(height: 10),
-                  _buildPreventionItem('D', 'Don\'t Use Drugs',
-                      'Hindari penggunaan narkoba, terutama suntik.'),
-                  const SizedBox(height: 10),
-                  _buildPreventionItem('E', 'Education',
-                      'Cari informasi yang benar tentang HIV/AIDS.'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDefinitionItem(String term, String definition) {
-    return Column(
-      children: [
-        Text(
-          term,
-          style: AppTextStyles.heading.copyWith(
-            color: AppColors.primary,
-            fontSize: 18,
-            shadows: [
-              const Shadow(color: AppColors.primary, blurRadius: 4),
             ],
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          definition,
-          style: AppTextStyles.bodyText.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            color: Colors.white70,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
+          child: _FadingText(
+            // Rebuild when duration changes to restart/resync animation
+            key: ValueKey('hook_$_hookAudioDuration'),
+            text:
+                'Menurut kamu, kenapa orang dengan HIV bisa tidak sadar kalau dia terinfeksi? Yuk kita pelajari perjalanan infeksinya!',
 
-  Widget _buildPreventionItem(String letter, String title, String desc) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$letter. ',
-          style: AppTextStyles.heading.copyWith(
-            color: AppColors.primary,
-            fontSize: 18,
-            shadows: [const Shadow(color: AppColors.primary, blurRadius: 4)],
-          ),
-        ),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: AppTextStyles.bodyText.copyWith(
-                color: Colors.white,
-                fontSize: 13,
-              ),
-              children: [
-                TextSpan(
-                  text: '$title: ',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColors.secondary),
-                ),
-                TextSpan(text: desc),
-              ],
+            // Pass the dynamic duration if available
+            duration: _hookAudioDuration,
+
+            style: AppTextStyles.bodyText.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              height: 1.4,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -460,20 +329,26 @@ class _FadingText extends StatelessWidget {
   final String text;
   final TextStyle style;
   final TextAlign textAlign;
+  final Duration? duration; // Optional explicit duration
 
   const _FadingText({
     Key? key,
     required this.text,
     required this.style,
     this.textAlign = TextAlign.start,
+    this.duration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final words = text.split(' ');
 
+    // Use explicit duration if provided, otherwise estimate fallback
+    final animationDuration =
+        duration ?? Duration(milliseconds: words.length * 80 + 1000);
+
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: words.length * 80 + 1000),
+      duration: animationDuration,
       tween: Tween(begin: 0.0, end: words.length.toDouble()),
       builder: (context, value, child) {
         List<TextSpan> children = [];

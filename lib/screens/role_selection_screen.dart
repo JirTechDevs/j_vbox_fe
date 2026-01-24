@@ -49,31 +49,14 @@ class RoleSelectionScreen extends StatelessWidget {
                           soundManager.playButtonPress();
                           controller.selectRole(UserRole.gay);
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: 280,
                           height: 220,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: AppColors.electricCyan, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.electricCyan.withOpacity(0.6),
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                              BoxShadow(
-                                color: AppColors.electricCyan.withOpacity(0.4),
-                                blurRadius: 24,
-                                spreadRadius: 4,
-                              ),
-                            ],
-                          ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(20),
                             child: Image.asset(
                               'assets/images/ic-role-1.png',
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
@@ -98,31 +81,14 @@ class RoleSelectionScreen extends StatelessWidget {
                           soundManager.playButtonPress();
                           controller.selectRole(UserRole.psk);
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: 280,
                           height: 220,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: AppColors.hotMagenta, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.hotMagenta.withOpacity(0.6),
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                              BoxShadow(
-                                color: AppColors.hotMagenta.withOpacity(0.4),
-                                blurRadius: 24,
-                                spreadRadius: 4,
-                              ),
-                            ],
-                          ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(20),
                             child: Image.asset(
                               'assets/images/ic-role-2.png',
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
@@ -149,114 +115,115 @@ class RoleSelectionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRoleButton(
-    BuildContext context,
-    AppController controller,
-    SoundManager soundManager, {
-    required String label,
-    required UserRole role,
-    IconData? icon,
-    String? imagePath,
-    required Color color,
-  }) {
-    return Container(
-      width: 250, // Slightly smaller for landscape row
-      height: 200, // Taller for card look
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6), // Dark background for contrast
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color, width: 2), // Neon border
-        boxShadow: [
-          // Multiple shadows for neon glow effect
-          BoxShadow(
-            color: color.withOpacity(0.6),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ), // Inner/Tight glow
-          BoxShadow(
-            color: color.withOpacity(0.4),
-            blurRadius: 24,
-            spreadRadius: 4,
-          ), // Outer/Soft glow
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            soundManager.playButtonPress();
-            controller.selectRole(role);
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Image or Icon with glow
-              if (imagePath != null)
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: color, width: 2),
-                    boxShadow: [
-                      BoxShadow(color: color, blurRadius: 15),
-                      BoxShadow(color: color, blurRadius: 30),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              else if (icon != null)
-                Icon(
-                  icon,
-                  size: 80,
-                  color: color,
-                  shadows: [
-                    Shadow(color: color, blurRadius: 15),
-                    Shadow(color: color, blurRadius: 30),
-                  ],
-                ),
-              const SizedBox(height: 24),
-              // Text container with glow
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(0.5),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Text(
-                  label,
-                  style: AppTextStyles.buttonText.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      const Shadow(
-                        color: Colors.black26,
-                        blurRadius: 2,
-                        offset: Offset(1, 1),
-                      )
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Unused method kept for reference
+  // Widget _buildRoleButton(
+  //   BuildContext context,
+  //   AppController controller,
+  //   SoundManager soundManager, {
+  //   required String label,
+  //   required UserRole role,
+  //   IconData? icon,
+  //   String? imagePath,
+  //   required Color color,
+  // }) {
+  //   return Container(
+  //     width: 250, // Slightly smaller for landscape row
+  //     height: 200, // Taller for card look
+  //     decoration: BoxDecoration(
+  //       color: Colors.black.withOpacity(0.6), // Dark background for contrast
+  //       borderRadius: BorderRadius.circular(20),
+  //       border: Border.all(color: color, width: 2), // Neon border
+  //       boxShadow: [
+  //         // Multiple shadows for neon glow effect
+  //         BoxShadow(
+  //           color: color.withOpacity(0.6),
+  //           blurRadius: 8,
+  //           spreadRadius: 2,
+  //         ), // Inner/Tight glow
+  //         BoxShadow(
+  //           color: color.withOpacity(0.4),
+  //           blurRadius: 24,
+  //           spreadRadius: 4,
+  //         ), // Outer/Soft glow
+  //       ],
+  //     ),
+  //     child: Material(
+  //       color: Colors.transparent,
+  //       child: InkWell(
+  //         onTap: () {
+  //           soundManager.playButtonPress();
+  //           controller.selectRole(role);
+  //         },
+  //         borderRadius: BorderRadius.circular(20),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             // Image or Icon with glow
+  //             if (imagePath != null)
+  //               Container(
+  //                 width: 100,
+  //                 height: 100,
+  //                 decoration: BoxDecoration(
+  //                   shape: BoxShape.circle,
+  //                   border: Border.all(color: color, width: 2),
+  //                   boxShadow: [
+  //                     BoxShadow(color: color, blurRadius: 15),
+  //                     BoxShadow(color: color, blurRadius: 30),
+  //                   ],
+  //                 ),
+  //                 child: ClipOval(
+  //                   child: Image.asset(
+  //                     imagePath,
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //                 ),
+  //               )
+  //             else if (icon != null)
+  //               Icon(
+  //                 icon,
+  //                 size: 80,
+  //                 color: color,
+  //                 shadows: [
+  //                   Shadow(color: color, blurRadius: 15),
+  //                   Shadow(color: color, blurRadius: 30),
+  //                 ],
+  //               ),
+  //             const SizedBox(height: 24),
+  //             // Text container with glow
+  //             Container(
+  //               padding:
+  //                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //               decoration: BoxDecoration(
+  //                 color: color,
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: color.withOpacity(0.5),
+  //                     blurRadius: 10,
+  //                     spreadRadius: 1,
+  //                   ),
+  //                 ],
+  //               ),
+  //               child: Text(
+  //                 label,
+  //                 style: AppTextStyles.buttonText.copyWith(
+  //                   fontSize: 20,
+  //                   fontWeight: FontWeight.bold,
+  //                   shadows: [
+  //                     const Shadow(
+  //                       color: Colors.black26,
+  //                       blurRadius: 2,
+  //                       offset: Offset(1, 1),
+  //                     )
+  //                   ],
+  //                 ),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

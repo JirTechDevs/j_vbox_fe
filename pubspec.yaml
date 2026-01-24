@@ -33,6 +33,7 @@ flutter:
     - assets/videos/
     # Sound effects
     - assets/sounds/
+    - assets/sounds/vo/
     # Image assets
     - assets/images/
 

@@ -44,27 +44,43 @@ class BehaviorSelectionScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Risky behavior option (Red)
-                      _buildBehaviorButton(
-                        context,
-                        controller,
-                        soundManager,
-                        label: 'Tidak Pakai Pengaman',
-                        behavior: BehaviorType.risky,
-                        imagePath: 'assets/images/ic-behave-1.png',
-                        color: AppColors.alertRed,
+                      GestureDetector(
+                        onTap: () {
+                          soundManager.playButtonPress();
+                          controller.selectBehavior(BehaviorType.risky);
+                        },
+                        child: SizedBox(
+                          width: 280,
+                          height: 220,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              'assets/images/ic-behave-1-re.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(width: 48),
 
                       // Safe behavior option (Green)
-                      _buildBehaviorButton(
-                        context,
-                        controller,
-                        soundManager,
-                        label: 'Pakai Pengaman',
-                        behavior: BehaviorType.safe,
-                        imagePath: 'assets/images/ic-behave-2.png',
-                        color: AppColors.safetyGreen,
+                      GestureDetector(
+                        onTap: () {
+                          soundManager.playButtonPress();
+                          controller.selectBehavior(BehaviorType.safe);
+                        },
+                        child: SizedBox(
+                          width: 280,
+                          height: 220,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              'assets/images/ic-behave-2-re.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -77,114 +93,115 @@ class BehaviorSelectionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBehaviorButton(
-    BuildContext context,
-    AppController controller,
-    SoundManager soundManager, {
-    required String label,
-    required BehaviorType behavior,
-    IconData? icon,
-    String? imagePath,
-    required Color color,
-  }) {
-    return Container(
-      width: 250,
-      height: 200,
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color, width: 2), // Neon border
-        boxShadow: [
-          // Multiple shadows for neon glow effect
-          BoxShadow(
-            color: color.withOpacity(0.6),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ), // Inner/Tight glow
-          BoxShadow(
-            color: color.withOpacity(0.4),
-            blurRadius: 24,
-            spreadRadius: 4,
-          ), // Outer/Soft glow
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            soundManager.playButtonPress();
-            controller.selectBehavior(behavior);
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Image or Icon with glow
-              if (imagePath != null)
-                Container(
-                  width: 100, // Same size as previous icons + padding
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: color, width: 2),
-                    boxShadow: [
-                      BoxShadow(color: color, blurRadius: 15),
-                      BoxShadow(color: color, blurRadius: 30),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              else if (icon != null)
-                Icon(
-                  icon,
-                  size: 80,
-                  color: color,
-                  shadows: [
-                    Shadow(color: color, blurRadius: 15),
-                    Shadow(color: color, blurRadius: 30),
-                  ],
-                ),
-              const SizedBox(height: 24),
-              // Text container with glow
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(0.5),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Text(
-                  label,
-                  style: AppTextStyles.buttonText.copyWith(
-                    fontSize: 18, // Slightly smaller text for longer label
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      const Shadow(
-                        color: Colors.black26,
-                        blurRadius: 2,
-                        offset: Offset(1, 1),
-                      )
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Unused method kept for reference
+  // Widget _buildBehaviorButton(
+  //   BuildContext context,
+  //   AppController controller,
+  //   SoundManager soundManager, {
+  //   required String label,
+  //   required BehaviorType behavior,
+  //   IconData? icon,
+  //   String? imagePath,
+  //   required Color color,
+  // }) {
+  //   return Container(
+  //     width: 250,
+  //     height: 200,
+  //     decoration: BoxDecoration(
+  //       color: Colors.black.withOpacity(0.6),
+  //       borderRadius: BorderRadius.circular(20),
+  //       border: Border.all(color: color, width: 2), // Neon border
+  //       boxShadow: [
+  //         // Multiple shadows for neon glow effect
+  //         BoxShadow(
+  //           color: color.withOpacity(0.6),
+  //           blurRadius: 8,
+  //           spreadRadius: 2,
+  //         ), // Inner/Tight glow
+  //         BoxShadow(
+  //           color: color.withOpacity(0.4),
+  //           blurRadius: 24,
+  //           spreadRadius: 4,
+  //         ), // Outer/Soft glow
+  //       ],
+  //     ),
+  //     child: Material(
+  //       color: Colors.transparent,
+  //       child: InkWell(
+  //         onTap: () {
+  //           soundManager.playButtonPress();
+  //           controller.selectBehavior(behavior);
+  //         },
+  //         borderRadius: BorderRadius.circular(20),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             // Image or Icon with glow
+  //             if (imagePath != null)
+  //               Container(
+  //                 width: 100, // Same size as previous icons + padding
+  //                 height: 100,
+  //                 decoration: BoxDecoration(
+  //                   shape: BoxShape.circle,
+  //                   border: Border.all(color: color, width: 2),
+  //                   boxShadow: [
+  //                     BoxShadow(color: color, blurRadius: 15),
+  //                     BoxShadow(color: color, blurRadius: 30),
+  //                   ],
+  //                 ),
+  //                 child: ClipOval(
+  //                   child: Image.asset(
+  //                     imagePath,
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //                 ),
+  //               )
+  //             else if (icon != null)
+  //               Icon(
+  //                 icon,
+  //                 size: 80,
+  //                 color: color,
+  //                 shadows: [
+  //                   Shadow(color: color, blurRadius: 15),
+  //                   Shadow(color: color, blurRadius: 30),
+  //                 ],
+  //               ),
+  //             const SizedBox(height: 24),
+  //             // Text container with glow
+  //             Container(
+  //               padding:
+  //                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //               decoration: BoxDecoration(
+  //                 color: color,
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: color.withOpacity(0.5),
+  //                     blurRadius: 10,
+  //                     spreadRadius: 1,
+  //                   ),
+  //                 ],
+  //               ),
+  //               child: Text(
+  //                 label,
+  //                 style: AppTextStyles.buttonText.copyWith(
+  //                   fontSize: 18, // Slightly smaller text for longer label
+  //                   fontWeight: FontWeight.bold,
+  //                   shadows: [
+  //                     const Shadow(
+  //                       color: Colors.black26,
+  //                       blurRadius: 2,
+  //                       offset: Offset(1, 1),
+  //                     )
+  //                   ],
+  //                 ),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

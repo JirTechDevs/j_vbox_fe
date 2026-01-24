@@ -49,8 +49,15 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Proceed from information to role selection
+  /// Proceed from information to final education (slides)
   void proceedFromInformation() {
+    _currentState = AppState.finalEducation;
+    _updateOrientation();
+    notifyListeners();
+  }
+
+  /// Proceed from completion of education slides to role selection
+  void startRoleSelection() {
     _currentState = AppState.roleSelection;
     _updateOrientation();
     notifyListeners();
@@ -117,10 +124,8 @@ class AppController extends ChangeNotifier {
 
   /// Complete recovery VR
   void completeRecovery() {
-    // Proceed to final education
-    _currentState = AppState.finalEducation;
-    _updateOrientation();
-    notifyListeners();
+    // Proceed to main menu (End of experience)
+    goToMainMenu();
   }
 
   /// Get the appropriate video path for time lapse
