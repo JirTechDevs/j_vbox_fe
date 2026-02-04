@@ -43,20 +43,40 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       audioPath: 'sounds/vo/spread.mp3',
     ),
     const EducationSlide(
-      title: 'Tanda & Gejala',
-      content: 'Penjelasan tentang tanda dan gejala (window period)...',
-      audioPath: 'sounds/edu_symptoms.mp3', // Placeholder
+      title: 'Tanda & Gejala (1/4)',
+      content:
+          'Berawal dari \'periode jendela\' (Window Period), artinya dimulai sejak virus HIV masuk ke dalam tubuh sampai tes HIV bisa mendeteksinya. Karena itu, hasil tes HIV masih bisa negatif, meskipun orang tersebut sudah terinfeksi dan bisa menularkan HIV.',
+      audioPath: 'sounds/vo/sign1.mp3',
+    ),
+    const EducationSlide(
+      title: 'Tanda & Gejala (2/4)',
+      content:
+          'Selanjutnya, fase pertama. Infeksi Awal.\nSaat itu, orang yang terinfeksi akan mengira ini penyakit flu biasa karena virus HIV masih belum terdeteksi dan tes darah masih bisa negatif. Risiko penularannya sangat tinggi dan fase ini terjadi 2 minggu sampai 3 bulan setelah virus masuk ke dalam tubuh.',
+      audioPath: 'sounds/vo/sign2.mp3',
+    ),
+    const EducationSlide(
+      title: 'Tanda & Gejala (3/4)',
+      content:
+          'Fase Laten. Fase yang paling lama dan bisa saja tidak disadari. Saat tes dilakukan, hasilnya sudah positif dan virus bisa menular kepada orang lain meskipun berkembang lebih lambat. Cirinya, ada diare berulang dan penurunan berat badan perlahan.',
+      audioPath: 'sounds/vo/sign3.mp3',
+    ),
+    const EducationSlide(
+      title: 'Tanda & Gejala (4/4)',
+      content:
+          'Yang terakhir, AIDS. Tahap lanjut dari infeksi virus HIV, kondisi ini terjadi ketika imun tubuh sudah sangat lemah. Virus dalam tubuh akan berkembang cepat dan menimbulkan berbagai gejala berat bahkan bisa menyebabkan kematian.\n\nJadi, jika sudah merasa memiliki tanda-tanda seperti yang sudah dijelaskan.. Yuk periksa dan kendalikan! Banyak orang dengan HIV bisa hidup sehat dengan pengobatan dan kontrol rutin.',
+      audioPath: '',
+    ),
+    const EducationSlide(
+      title: 'Penanganan',
+      content:
+          'HIV ditangani dengan konsumsi obat antiretroviral (ARV) secara rutin serta pemeriksaan kesehatan berkala untuk memantau kondisi dan menekan jumlah virus.',
+      audioPath: '',
     ),
     const EducationSlide(
       title: 'Pencegahan',
       content:
           'HIV dapat dicegah dengan menggunakan kondom secara konsisten, tidak berbagi jarum suntik, melakukan tes HIV secara rutin, serta mengonsumsi obat pencegahan dan pengobatan (PrEP dan ARV) sesuai anjuran tenaga kesehatan. Perilaku seksual yang lebih aman dan akses layanan kesehatan yang tepat membantu menurunkan risiko penularan HIV.',
       audioPath: 'sounds/vo/prevention.mp3', // Placeholder
-    ),
-    const EducationSlide(
-      title: 'Penanganan',
-      content: 'Informasi pengobatan dan cek rutin...',
-      audioPath: 'sounds/edu_treatment.mp3', // Placeholder
     ),
     const EducationSlide(
       title: 'Pesan Penting',
