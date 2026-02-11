@@ -23,6 +23,8 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
   late VideoPlayerController _controller;
   bool _isInitialized = false;
   bool _hasError = false;
+  bool _showPlayButton = false;
+  String _debugStatus = 'Initializing...';
 
   @override
   void initState() {
@@ -44,16 +46,27 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
   /// Initialize video player
   Future<void> _initializeVideo() async {
     try {
+      setState(() => _debugStatus = 'Loading video asset...');
       _controller = VideoPlayerController.asset(widget.videoPath);
 
       await _controller.initialize();
+      setState(() => _debugStatus = 'Video initialized. Preparing playback...');
+
       await _controller.setLooping(false);
 
       // Listen for video completion
       _controller.addListener(_videoListener);
 
-      // Auto-play video
-      await _controller.play();
+      // Try Auto-play
+      try {
+        await _controller.play();
+      } catch (e) {
+        print("Autoplay blocked/failed: $e");
+        setState(() {
+          _showPlayButton = true;
+          _debugStatus = 'Tap to start';
+        });
+      }
 
       setState(() {
         _isInitialized = true;
@@ -61,6 +74,7 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
     } catch (e) {
       setState(() {
         _hasError = true;
+        _debugStatus = 'Error: $e';
       });
       print('Video initialization error: $e');
     }
@@ -73,6 +87,15 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
       _controller.removeListener(_videoListener);
       widget.onVideoComplete();
     }
+  }
+
+  /// Manual play action
+  void _playVideo() {
+    _controller.play().then((_) {
+      setState(() {
+        _showPlayButton = false;
+      });
+    });
   }
 
   @override
@@ -93,7 +116,29 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
       return _buildLoadingView();
     }
 
-    return _buildVRView();
+    return Stack(
+      children: [
+        _buildVRView(),
+        if (_showPlayButton || !_controller.value.isPlaying)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black54,
+              child: Center(
+                child: ElevatedButton.icon(
+                  onPressed: _playVideo,
+                  icon: const Icon(Icons.play_arrow, size: 32),
+                  label: const Text("START VR EXPERIENCE",
+                      style: TextStyle(fontSize: 20)),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 
   /// Build VR split-screen view
@@ -124,9 +169,19 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
   Widget _buildLoadingView() {
     return Container(
       color: Colors.black,
-      child: const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(
+              color: Colors.white,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _debugStatus,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ],
         ),
       ),
     );
@@ -156,10 +211,20 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
             ),
             const SizedBox(height: 8),
             Text(
-              '(${widget.videoPath})',
+              'File: ${widget.videoPath}',
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _debugStatus,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.redAccent,
+                fontSize: 12,
               ),
             ),
             const SizedBox(height: 32),

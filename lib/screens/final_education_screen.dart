@@ -1,3 +1,4 @@
+import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -78,21 +79,37 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
           'HIV dapat dicegah dengan menggunakan kondom secara konsisten, tidak berbagi jarum suntik, melakukan tes HIV secara rutin, serta mengonsumsi obat pencegahan dan pengobatan (PrEP dan ARV) sesuai anjuran tenaga kesehatan. Perilaku seksual yang lebih aman dan akses layanan kesehatan yang tepat membantu menurunkan risiko penularan HIV.',
       audioPath: 'sounds/vo/prevention.mp3', // Placeholder
     ),
-    const EducationSlide(
-      title: 'Pesan Penting',
-      content: 'Imbauan dan pengingat akhir...',
-      audioPath: 'sounds/edu_reminder.mp3', // Placeholder
-    ),
+    // const EducationSlide(
+    //   title: 'Pesan Penting',
+    //   content: 'Imbauan dan pengingat akhir...',
+    //   audioPath: 'sounds/edu_reminder.mp3', // Placeholder
+    // ),
   ];
+
+  StreamSubscription? _playerCompleteSubscription;
 
   @override
   void initState() {
     super.initState();
     _playCurrentSlideAudio();
+
+    _playerCompleteSubscription =
+        _audioPlayer.onPlayerComplete.listen((event) async {
+      final startingIndex = _currentIndex;
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted && _currentIndex == startingIndex) {
+        // Only auto-advance if the current slide actually has audio
+        // (though onPlayerComplete implies it did play something)
+        if (_slides[_currentIndex].audioPath.isNotEmpty) {
+          _nextSlide();
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _playerCompleteSubscription?.cancel();
     _pageController.dispose();
     _audioPlayer.stop(); // Ensure audio stops when leaving screen
     _audioPlayer.dispose();

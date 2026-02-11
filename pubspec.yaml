@@ -31,6 +31,7 @@ flutter:
   assets:
     # Video assets (to be provided by client)
     - assets/videos/
+    - assets/videos/gay/
     # Sound effects
     - assets/sounds/
     - assets/sounds/vo/

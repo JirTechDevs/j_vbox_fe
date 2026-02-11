@@ -1,3 +1,4 @@
+import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/app_controller.dart';
@@ -61,14 +62,23 @@ class _InformationPageViewState extends State<_InformationPageView> {
   final int _totalPages = 2; // Intro + Hook
   Duration? _hookAudioDuration; // Duration of the hook VO
 
+  StreamSubscription? _playerCompleteSubscription;
+
   @override
   void initState() {
     super.initState();
-    // Pre-fetch duration for the hook if possible, or just wait for page turn
+    _playerCompleteSubscription =
+        _audioPlayer.onPlayerComplete.listen((event) async {
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted && _currentPage == 1) {
+        _nextPage();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _playerCompleteSubscription?.cancel();
     _pageController.dispose();
     _audioPlayer.dispose();
     super.dispose();

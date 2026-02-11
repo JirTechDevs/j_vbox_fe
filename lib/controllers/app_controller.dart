@@ -118,14 +118,25 @@ class AppController extends ChangeNotifier {
 
   /// Complete negative outcome VR
   void completeNegativeOutcome() {
-    // Go back to main menu (app ends, can restart)
-    goToMainMenu();
+    // Go back to information screen (start over)
+    restartScenario();
   }
 
   /// Complete recovery VR
   void completeRecovery() {
-    // Proceed to main menu (End of experience)
-    goToMainMenu();
+    // Proceed to information screen (start over)
+    restartScenario();
+  }
+
+  /// Restart scenario - go to information screen with reset state
+  void restartScenario() {
+    _currentState = AppState.information;
+    _selectedRole = null;
+    _selectedBehavior = null;
+    _isHealthy = null;
+    _continueRiskyBehavior = null;
+    _updateOrientation();
+    notifyListeners();
   }
 
   /// Get the appropriate video path for time lapse
