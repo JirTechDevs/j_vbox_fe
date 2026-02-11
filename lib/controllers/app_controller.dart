@@ -42,9 +42,14 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // State parameter for InformationScreen
+  int _initialInformationPage = 0;
+  int get initialInformationPage => _initialInformationPage;
+
   /// Start scenario - go to information screen
   void startScenario() {
     _currentState = AppState.information;
+    _initialInformationPage = 0; // Start from beginning
     _updateOrientation();
     notifyListeners();
   }
@@ -131,6 +136,7 @@ class AppController extends ChangeNotifier {
   /// Restart scenario - go to information screen with reset state
   void restartScenario() {
     _currentState = AppState.information;
+    _initialInformationPage = 1; // Start from "Menurut Kamu" (Page 1)
     _selectedRole = null;
     _selectedBehavior = null;
     _isHealthy = null;

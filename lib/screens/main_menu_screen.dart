@@ -66,8 +66,6 @@ class MainMenuScreen extends StatelessWidget {
 
                   // Play Button
                   _buildPlayButton(context, controller, soundManager),
-
-                  const SizedBox(height: 24),
                 ],
               ),
             ),

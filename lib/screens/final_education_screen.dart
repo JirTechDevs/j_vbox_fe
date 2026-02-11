@@ -1,3 +1,4 @@
+import '../widgets/vr_splitter.dart';
 import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,8 @@ class FinalEducationScreen extends StatefulWidget {
 }
 
 class _FinalEducationScreenState extends State<FinalEducationScreen> {
-  final PageController _pageController = PageController();
+  late PageController _leftPageController;
+  late PageController _rightPageController;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   int _currentIndex = 0;
@@ -91,26 +93,34 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
   @override
   void initState() {
     super.initState();
+    _leftPageController = PageController();
+    _rightPageController = PageController();
     _playCurrentSlideAudio();
 
-    _playerCompleteSubscription =
-        _audioPlayer.onPlayerComplete.listen((event) async {
-      final startingIndex = _currentIndex;
-      await Future.delayed(const Duration(seconds: 2));
-      if (mounted && _currentIndex == startingIndex) {
-        // Only auto-advance if the current slide actually has audio
-        // (though onPlayerComplete implies it did play something)
-        if (_slides[_currentIndex].audioPath.isNotEmpty) {
-          _nextSlide();
+    _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((event) {
+      // Use a post-frame callback or simple future to avoid state race conditions
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted && _currentIndex == _currentIndex) {
+          // Re-check index haven't changed manually
+          // Only advance if we are not on the last slide
+          if (_currentIndex < _slides.length - 1) {
+            if (_slides[_currentIndex].audioPath.isNotEmpty) {
+              _nextSlide();
+            }
+          } else {
+            // Optional: Auto-finish? User might want to read final text.
+            // Let's NOT auto-finish the last slide to avoid sudden exit.
+          }
         }
-      }
+      });
     });
   }
 
   @override
   void dispose() {
     _playerCompleteSubscription?.cancel();
-    _pageController.dispose();
+    _leftPageController.dispose();
+    _rightPageController.dispose();
     _audioPlayer.stop(); // Ensure audio stops when leaving screen
     _audioPlayer.dispose();
     super.dispose();
@@ -156,10 +166,10 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
 
   void _nextSlide() {
     if (_currentIndex < _slides.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+      const duration = Duration(milliseconds: 500);
+      const curve = Curves.easeInOut;
+      _leftPageController.nextPage(duration: duration, curve: curve);
+      _rightPageController.nextPage(duration: duration, curve: curve);
     } else {
       // Finished
       final controller = context.read<AppController>();
@@ -169,11 +179,18 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
 
   void _previousSlide() {
     if (_currentIndex > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+      const duration = Duration(milliseconds: 500);
+      const curve = Curves.easeInOut;
+      _leftPageController.previousPage(duration: duration, curve: curve);
+      _rightPageController.previousPage(duration: duration, curve: curve);
     }
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _playCurrentSlideAudio();
   }
 
   @override
@@ -187,102 +204,128 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: AppGradients.cosmicBackground,
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // Header / Progress
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 4.0), // Reduced from 8
-                  child: Text(
-                    'Edukasi HIV/AIDS (${_currentIndex + 1}/${_slides.length})',
-                    style: AppTextStyles.bodyText.copyWith(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10, // Reduced size
-                    ),
-                  ),
+        body: VRSplitter(
+          builder: (context, eyeIndex) {
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: AppGradients.cosmicBackground,
+              ),
+              child: SafeArea(
+                child: _FinalEducationContent(
+                  pageController: eyeIndex == 0
+                      ? _leftPageController
+                      : _rightPageController,
+                  currentIndex: _currentIndex,
+                  slides: _slides,
+                  currentSlideDuration: _currentSlideDuration,
+                  onPageChanged: _onPageChanged,
+                  onNext: _nextSlide,
+                  onPrevious: _previousSlide,
                 ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
-                // Slide Content
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Disable swipe to force buttons? Or allow?
-                    // Let's allow swipe but satisfy button usage too.
-                    // Actually, for guided experience, buttons are safer.
-                    itemCount: _slides.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                      _playCurrentSlideAudio();
-                    },
-                    itemBuilder: (context, index) {
-                      return _buildSlide(_slides[index]);
-                    },
-                  ),
-                ),
+class _FinalEducationContent extends StatelessWidget {
+  final PageController pageController;
+  final int currentIndex;
+  final List<EducationSlide> slides;
+  final Duration? currentSlideDuration;
+  final ValueChanged<int> onPageChanged;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
 
-                // Navigation Controls
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Back Button
-                      if (_currentIndex > 0)
-                        _buildNavButton(
-                          icon: Icons.arrow_back,
-                          label: 'Kembali',
-                          onPressed: _previousSlide,
-                          color: AppColors.secondary,
-                        )
-                      else
-                        const SizedBox(width: 140), // Spacer
+  const _FinalEducationContent({
+    Key? key,
+    required this.pageController,
+    required this.currentIndex,
+    required this.slides,
+    required this.currentSlideDuration,
+    required this.onPageChanged,
+    required this.onNext,
+    required this.onPrevious,
+  }) : super(key: key);
 
-                      // Next / Finish Button
-                      _buildNavButton(
-                        icon: _currentIndex == _slides.length - 1
-                            ? Icons.check_circle
-                            : Icons.arrow_forward,
-                        label: _currentIndex == _slides.length - 1
-                            ? 'Selesai'
-                            : 'Lanjut',
-                        onPressed: _nextSlide,
-                        color: _currentIndex == _slides.length - 1
-                            ? AppColors.success
-                            : AppColors.primary,
-                        isPrimary: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Header / Progress
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Text(
+            'Edukasi HIV/AIDS (${currentIndex + 1}/${slides.length})',
+            style: AppTextStyles.bodyText.copyWith(
+              color: Colors.white70,
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
             ),
           ),
         ),
-      ),
+
+        // Slide Content
+        Expanded(
+          child: PageView.builder(
+            controller: pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: slides.length,
+            onPageChanged: onPageChanged,
+            itemBuilder: (context, index) {
+              return _buildSlide(slides[index]);
+            },
+          ),
+        ),
+
+        // Navigation Controls
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Back Button
+              if (currentIndex > 0)
+                _buildNavButton(
+                  icon: Icons.arrow_back,
+                  label: 'Kembali',
+                  onPressed: onPrevious,
+                  color: AppColors.secondary,
+                )
+              else
+                const SizedBox(width: 140),
+
+              // Next / Finish Button
+              _buildNavButton(
+                icon: currentIndex == slides.length - 1
+                    ? Icons.check_circle
+                    : Icons.arrow_forward,
+                label: currentIndex == slides.length - 1 ? 'Selesai' : 'Lanjut',
+                onPressed: onNext,
+                color: currentIndex == slides.length - 1
+                    ? AppColors.success
+                    : AppColors.primary,
+                isPrimary: true,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildSlide(EducationSlide slide) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8.0), // Reduced outer margin to make container wider
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16), // Increased internal padding slightly
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(16), // Smaller radius
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white10),
             boxShadow: [
               BoxShadow(
@@ -300,22 +343,21 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
                   slide.title,
                   style: AppTextStyles.title.copyWith(
                     color: AppColors.textPrimary,
-                    fontSize: 18, // Reduced from 20
+                    fontSize: 18,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 4), // Reduced from 8
+                const SizedBox(height: 4),
                 Container(
                   height: 1.5,
-                  width: 40, // Reduced length
+                  width: 40,
                   color: AppColors.accent,
                 ),
-                const SizedBox(height: 8), // Reduced from 12
+                const SizedBox(height: 8),
                 _FadingText(
-                  key: ValueKey(
-                      '${slide.title}_$_currentSlideDuration'), // Reset on title change or duration ready
+                  key: ValueKey('${slide.title}_$currentSlideDuration'),
                   text: slide.content,
-                  duration: _currentSlideDuration, // Sync with audio!
+                  duration: currentSlideDuration,
                   style: AppTextStyles.bodyText.copyWith(
                     fontSize: 12,
                     height: 1.15,
@@ -350,11 +392,11 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       ),
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 20), // Smaller icon
+        icon: Icon(icon, size: 20),
         label: Text(
           label,
           style: const TextStyle(
-            fontSize: 16, // Smaller font
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -362,8 +404,7 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
           backgroundColor: isPrimary ? color : AppColors.secondary,
           foregroundColor: Colors.white,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 12), // Compact padding
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

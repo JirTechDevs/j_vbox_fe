@@ -1,3 +1,4 @@
+import '../widgets/vr_splitter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/app_controller.dart';
@@ -23,71 +24,75 @@ class BehaviorSelectionScreen extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: AppGradients.cosmicBackground,
-          ),
-          child: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Title
-                  const Text(
-                    'Pilihan Keputusan',
-                    style: AppTextStyles.title,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 64),
-
-                  Row(
+        body: VRSplitter(
+          builder: (context, eyeIndex) {
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: AppGradients.cosmicBackground,
+              ),
+              child: SafeArea(
+                child: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Risky behavior option (Red)
-                      GestureDetector(
-                        onTap: () {
-                          soundManager.playButtonPress();
-                          controller.selectBehavior(BehaviorType.risky);
-                        },
-                        child: SizedBox(
-                          width: 280,
-                          height: 220,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/ic-behave-1-re.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
+                      // Title
+                      const Text(
+                        'Pilihan Keputusan',
+                        style: AppTextStyles.title,
+                        textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 64),
 
-                      const SizedBox(width: 48),
-
-                      // Safe behavior option (Green)
-                      GestureDetector(
-                        onTap: () {
-                          soundManager.playButtonPress();
-                          controller.selectBehavior(BehaviorType.safe);
-                        },
-                        child: SizedBox(
-                          width: 280,
-                          height: 220,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/ic-behave-2-re.png',
-                              fit: BoxFit.contain,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Risky behavior option (Red)
+                          GestureDetector(
+                            onTap: () {
+                              soundManager.playButtonPress();
+                              controller.selectBehavior(BehaviorType.risky);
+                            },
+                            child: SizedBox(
+                              width: 280,
+                              height: 220,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  'assets/images/ic-behave-1-re.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+
+                          const SizedBox(width: 48),
+
+                          // Safe behavior option (Green)
+                          GestureDetector(
+                            onTap: () {
+                              soundManager.playButtonPress();
+                              controller.selectBehavior(BehaviorType.safe);
+                            },
+                            child: SizedBox(
+                              width: 280,
+                              height: 220,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  'assets/images/ic-behave-2-re.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

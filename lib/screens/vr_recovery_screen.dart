@@ -1,3 +1,4 @@
+import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/app_controller.dart';
@@ -19,9 +20,13 @@ class VRRecoveryScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: VRVideoPlayer(
         videoPath: videoPath,
-        onVideoComplete: () {
-          // Auto-exit VR and proceed to final education
-          controller.completeRecovery();
+        onVideoComplete: () async {
+          // Wait 5 seconds on result screen
+          await Future.delayed(const Duration(seconds: 5));
+          // Auto-exit VR and restart scenario
+          if (context.mounted) {
+            controller.completeRecovery();
+          }
         },
       ),
     );

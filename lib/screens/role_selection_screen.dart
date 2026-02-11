@@ -1,3 +1,4 @@
+import '../widgets/vr_splitter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/app_controller.dart';
@@ -23,93 +24,75 @@ class RoleSelectionScreen extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: AppGradients.cosmicBackground,
-          ),
-          child: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Title
-                  const Text(
-                    'Pilihan Perspektif',
-                    style: AppTextStyles.title,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 64),
-
-                  Row(
+        body: VRSplitter(
+          builder: (context, eyeIndex) {
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: AppGradients.cosmicBackground,
+              ),
+              child: SafeArea(
+                child: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Laki-laki option - Tappable Image
-                      GestureDetector(
-                        onTap: () {
-                          soundManager.playButtonPress();
-                          controller.selectRole(UserRole.gay);
-                        },
-                        child: SizedBox(
-                          width: 280,
-                          height: 220,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/ic-role-1.png',
-                              fit: BoxFit.contain,
+                      // Title
+                      const Text(
+                        'Pilihan Perspektif',
+                        style: AppTextStyles.title,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 64),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Laki-laki option - Tappable Image
+                          GestureDetector(
+                            onTap: () {
+                              soundManager.playButtonPress();
+                              controller.selectRole(UserRole.gay);
+                            },
+                            child: SizedBox(
+                              width: 280,
+                              height: 220,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  'assets/images/ic-role-1.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
 
-                      // Original button (commented out)
-                      // _buildRoleButton(
-                      //   context,
-                      //   controller,
-                      //   soundManager,
-                      //   label: 'Laki-laki',
-                      //   role: UserRole.gay,
-                      //   imagePath: 'assets/images/choice-1.jpg',
-                      //   color: AppColors.electricCyan,
-                      // ),
+                          const SizedBox(width: 48),
 
-                      const SizedBox(width: 48),
-
-                      // Perempuan option - Tappable Image
-                      GestureDetector(
-                        onTap: () {
-                          soundManager.playButtonPress();
-                          controller.selectRole(UserRole.psk);
-                        },
-                        child: SizedBox(
-                          width: 280,
-                          height: 220,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/ic-role-2.png',
-                              fit: BoxFit.contain,
+                          // Perempuan option - Tappable Image
+                          GestureDetector(
+                            onTap: () {
+                              soundManager.playButtonPress();
+                              controller.selectRole(UserRole.psk);
+                            },
+                            child: SizedBox(
+                              width: 280,
+                              height: 220,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  'assets/images/ic-role-2.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-
-                      // Original button (commented out)
-                      // _buildRoleButton(
-                      //   context,
-                      //   controller,
-                      //   soundManager,
-                      //   label: 'Perempuan',
-                      //   role: UserRole.psk,
-                      //   icon: Icons.woman,
-                      //   color: AppColors.hotMagenta,
-                      // ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

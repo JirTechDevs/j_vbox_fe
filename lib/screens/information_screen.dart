@@ -1,3 +1,4 @@
+import '../widgets/vr_splitter.dart';
 import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,69 +9,60 @@ import 'package:audioplayers/audioplayers.dart';
 
 /// State 0.5 - HIV Information Screen
 /// Displays definition of HIV before role selection
-class InformationScreen extends StatelessWidget {
+class InformationScreen extends StatefulWidget {
   const InformationScreen({Key? key}) : super(key: key);
 
   @override
-  @override
-  Widget build(BuildContext context) {
-    final controller = context.read<AppController>();
-    final soundManager = SoundManager();
-
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
-        controller.goBack();
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: AppGradients.cosmicBackground,
-          ),
-          child: SafeArea(
-            child: _InformationPageView(
-              controller: controller,
-              soundManager: soundManager,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  State<InformationScreen> createState() => _InformationScreenState();
 }
 
-class _InformationPageView extends StatefulWidget {
-  final AppController controller;
-  final SoundManager soundManager;
-
-  const _InformationPageView({
-    Key? key,
-    required this.controller,
-    required this.soundManager,
-  }) : super(key: key);
-
-  @override
-  State<_InformationPageView> createState() => _InformationPageViewState();
-}
-
-class _InformationPageViewState extends State<_InformationPageView> {
-  final PageController _pageController = PageController();
+class _InformationScreenState extends State<InformationScreen> {
+  late PageController _leftPageController;
+  late PageController _rightPageController;
   final AudioPlayer _audioPlayer = AudioPlayer();
   int _currentPage = 0;
   final int _totalPages = 2; // Intro + Hook
-  Duration? _hookAudioDuration; // Duration of the hook VO
-
+  Duration? _hookAudioDuration;
   StreamSubscription? _playerCompleteSubscription;
+  Timer? _introTextTimer;
 
   @override
   void initState() {
     super.initState();
+    final controller = context.read<AppController>();
+    _currentPage = controller.initialInformationPage;
+
+    // Create distinct controllers for each eye to correctly handle PageView gestures/animations
+    _leftPageController = PageController(initialPage: _currentPage);
+    _rightPageController = PageController(initialPage: _currentPage);
+
+    // If starting on Hook Page (1), play audio immediately
+    if (_currentPage == 1) {
+      Future.delayed(Duration.zero, () {
+        if (mounted) _playIntroVoiceover();
+      });
+    } else {
+      // If on Intro Page (0), start timer for text reading
+      _startIntroTextTimer();
+    }
+
     _playerCompleteSubscription =
         _audioPlayer.onPlayerComplete.listen((event) async {
-      await Future.delayed(const Duration(seconds: 2));
+      // Audio finished (Hook page), wait 2s then next
       if (mounted && _currentPage == 1) {
+        await Future.delayed(const Duration(seconds: 2));
+        if (mounted && _currentPage == 1) {
+          _nextPage();
+        }
+      }
+    });
+  }
+
+  void _startIntroTextTimer() {
+    _introTextTimer?.cancel();
+    // 12 seconds for reading "Kata Pengantar"
+    _introTextTimer = Timer(const Duration(seconds: 12), () {
+      if (mounted && _currentPage == 0) {
         _nextPage();
       }
     });
@@ -78,75 +70,152 @@ class _InformationPageViewState extends State<_InformationPageView> {
 
   @override
   void dispose() {
+    _introTextTimer?.cancel();
     _playerCompleteSubscription?.cancel();
-    _pageController.dispose();
+    _leftPageController.dispose();
+    _rightPageController.dispose();
     _audioPlayer.dispose();
     super.dispose();
   }
+
+  // ... (keep audio methods same) ...
 
   Future<void> _playIntroVoiceover() async {
     try {
       await _audioPlayer.stop();
       final source = AssetSource('sounds/vo/intro.mp3');
-
-      // Set source first to get duration
       await _audioPlayer.setSource(source);
       final duration = await _audioPlayer.getDuration();
-
-      setState(() {
-        _hookAudioDuration = duration;
-      });
-
-      await _audioPlayer.resume();
+      if (mounted) {
+        setState(() {
+          _hookAudioDuration = duration;
+        });
+        await _audioPlayer.resume();
+      }
     } catch (e) {
       debugPrint('Error playing intro VO: $e');
-      // Fallback: Set duration to null to use default speed
-      setState(() {
-        _hookAudioDuration = null;
-      });
+      if (mounted) {
+        setState(() {
+          _hookAudioDuration = null;
+        });
+      }
     }
   }
 
   void _nextPage() {
-    widget.soundManager.playButtonPress();
+    final soundManager = SoundManager();
+    soundManager.playButtonPress();
     if (_currentPage < _totalPages - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      // Animate BOTH eyes simultaneously
+      const duration = Duration(milliseconds: 300);
+      const curve = Curves.easeInOut;
+
+      _leftPageController.animateToPage(_currentPage + 1,
+          duration: duration, curve: curve);
+      _rightPageController.animateToPage(_currentPage + 1,
+          duration: duration, curve: curve);
     } else {
-      widget.controller.proceedFromInformation();
+      context.read<AppController>().proceedFromInformation();
     }
   }
 
   void _previousPage() {
-    widget.soundManager.playButtonPress();
+    final soundManager = SoundManager();
+    soundManager.playButtonPress();
     if (_currentPage > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      const duration = Duration(milliseconds: 300);
+      const curve = Curves.easeInOut;
+
+      _leftPageController.animateToPage(_currentPage - 1,
+          duration: duration, curve: curve);
+      _rightPageController.animateToPage(_currentPage - 1,
+          duration: duration, curve: curve);
     }
   }
 
+  void _onPageChanged(int index) {
+    // Only update state once (can rely on either controller, but state is shared)
+    if (_currentPage != index) {
+      setState(() {
+        _currentPage = index;
+      });
+
+      if (index == 1) {
+        _playIntroVoiceover();
+      } else {
+        _audioPlayer.stop();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.read<AppController>().goBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: VRSplitter(
+          builder: (context, eyeIndex) {
+            // Pass the specific controller for this eye
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: AppGradients.cosmicBackground,
+              ),
+              child: SafeArea(
+                child: _InformationContent(
+                  pageController: eyeIndex == 0
+                      ? _leftPageController
+                      : _rightPageController,
+                  currentPage: _currentPage,
+                  totalPages: _totalPages,
+                  hookAudioDuration: _hookAudioDuration,
+                  onPageChanged: _onPageChanged,
+                  onNext: _nextPage,
+                  onPrevious: _previousPage,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _InformationContent extends StatelessWidget {
+  final PageController pageController;
+  final int currentPage;
+  final int totalPages;
+  final Duration? hookAudioDuration;
+  final ValueChanged<int> onPageChanged;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
+
+  const _InformationContent({
+    Key? key,
+    required this.pageController,
+    required this.currentPage,
+    required this.totalPages,
+    required this.hookAudioDuration,
+    required this.onPageChanged,
+    required this.onNext,
+    required this.onPrevious,
+  }) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
           child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-
-              // Play VO if on Hook page (Index 1)
-              if (index == 1) {
-                _playIntroVoiceover();
-              } else {
-                _audioPlayer.stop();
-              }
-            },
+            physics:
+                const NeverScrollableScrollPhysics(), // Prevent user drag conflict
+            controller: pageController,
+            onPageChanged: onPageChanged,
             children: [
               _buildDisclaimerPage(),
               _buildHookPage(),
@@ -229,12 +298,12 @@ class _InformationPageViewState extends State<_InformationPageView> {
           ),
           child: _FadingText(
             // Rebuild when duration changes to restart/resync animation
-            key: ValueKey('hook_$_hookAudioDuration'),
+            key: ValueKey('hook_$hookAudioDuration'),
             text:
                 'Menurut kamu, kenapa orang dengan HIV bisa tidak sadar kalau dirinya terinfeksi? Yuk kita pelajari perjalanan infeksinya!',
 
             // Pass the dynamic duration if available
-            duration: _hookAudioDuration,
+            duration: hookAudioDuration,
 
             style: AppTextStyles.bodyText.copyWith(
               fontSize: 20,
@@ -256,7 +325,7 @@ class _InformationPageViewState extends State<_InformationPageView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Back Button
-          if (_currentPage > 0)
+          if (currentPage > 0)
             Container(
               decoration: BoxDecoration(
                 boxShadow: const [
@@ -268,7 +337,7 @@ class _InformationPageViewState extends State<_InformationPageView> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: ElevatedButton.icon(
-                onPressed: _previousPage,
+                onPressed: onPrevious,
                 icon: const Icon(Icons.arrow_back),
                 label: const Text('KEMBALI'),
                 style: ElevatedButton.styleFrom(
@@ -283,17 +352,17 @@ class _InformationPageViewState extends State<_InformationPageView> {
 
           // Page Indicator
           Row(
-            children: List.generate(_totalPages, (index) {
+            children: List.generate(totalPages, (index) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _currentPage == index
+                  color: currentPage == index
                       ? AppColors.primary
                       : AppColors.primary.withOpacity(0.3),
-                  boxShadow: _currentPage == index
+                  boxShadow: currentPage == index
                       ? [
                           const BoxShadow(
                               color: AppColors.primary, blurRadius: 8)
@@ -316,12 +385,11 @@ class _InformationPageViewState extends State<_InformationPageView> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: ElevatedButton.icon(
-              onPressed: _nextPage,
-              icon: Icon(_currentPage == _totalPages - 1
+              onPressed: onNext,
+              icon: Icon(currentPage == totalPages - 1
                   ? Icons.check
                   : Icons.arrow_forward),
-              label:
-                  Text(_currentPage == _totalPages - 1 ? 'SELESAI' : 'LANJUT'),
+              label: Text(currentPage == totalPages - 1 ? 'SELESAI' : 'LANJUT'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
