@@ -1,4 +1,5 @@
 import '../widgets/vr_splitter.dart';
+import '../widgets/vr_lens_distortion.dart';
 import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -200,31 +201,42 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       canPop: false,
       onPopInvoked: (didPop) {
         if (didPop) return;
-        // Optional: Allow exit confirm? For now, nothing to keep flow strict.
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: VRSplitter(
-          builder: (context, eyeIndex) {
-            return Container(
-              decoration: const BoxDecoration(
-                gradient: AppGradients.cosmicBackground,
-              ),
-              child: SafeArea(
-                child: _FinalEducationContent(
-                  pageController: eyeIndex == 0
-                      ? _leftPageController
-                      : _rightPageController,
-                  currentIndex: _currentIndex,
-                  slides: _slides,
-                  currentSlideDuration: _currentSlideDuration,
-                  onPageChanged: _onPageChanged,
-                  onNext: _nextSlide,
-                  onPrevious: _previousSlide,
+        body: VRLensDistortion(
+          // Production values optimized for VR Box (45mm object distance)
+          // Minimal distortion to match comfortable video playback experience
+          k1: 0.01,
+          k2: 0.005,
+          ipdOffset: 0.0, // Centered for average IPD (64mm)
+          child: VRSplitter(
+            builder: (context, eyeIndex) {
+              return Container(
+                decoration: const BoxDecoration(
+                  gradient: AppGradients.cosmicBackground,
                 ),
-              ),
-            );
-          },
+                child: SafeArea(
+                  child: Center(
+                    child: Transform.scale(
+                      scale: 0.65, // Simulates distance (1.5m - 3.0m feel)
+                      child: _FinalEducationContent(
+                        pageController: eyeIndex == 0
+                            ? _leftPageController
+                            : _rightPageController,
+                        currentIndex: _currentIndex,
+                        slides: _slides,
+                        currentSlideDuration: _currentSlideDuration,
+                        onPageChanged: _onPageChanged,
+                        onNext: _nextSlide,
+                        onPrevious: _previousSlide,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -285,30 +297,40 @@ class _FinalEducationContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Back Button
-              if (currentIndex > 0)
-                _buildNavButton(
-                  icon: Icons.arrow_back,
-                  label: 'Kembali',
-                  onPressed: onPrevious,
-                  color: AppColors.secondary,
-                )
-              else
-                const SizedBox(width: 140),
+              // Back Button (Always takes left side space)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: currentIndex > 0
+                      ? _buildNavButton(
+                          icon: Icons.arrow_back,
+                          label: 'Kembali',
+                          onPressed: onPrevious,
+                          color: AppColors.secondary,
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ),
 
-              // Next / Finish Button
-              _buildNavButton(
-                icon: currentIndex == slides.length - 1
-                    ? Icons.check_circle
-                    : Icons.arrow_forward,
-                label: currentIndex == slides.length - 1 ? 'Selesai' : 'Lanjut',
-                onPressed: onNext,
-                color: currentIndex == slides.length - 1
-                    ? AppColors.success
-                    : AppColors.primary,
-                isPrimary: true,
+              // Next / Finish Button (Always takes right side space)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: _buildNavButton(
+                    icon: currentIndex == slides.length - 1
+                        ? Icons.check_circle
+                        : Icons.arrow_forward,
+                    label: currentIndex == slides.length - 1
+                        ? 'Selesai'
+                        : 'Lanjut',
+                    onPressed: onNext,
+                    color: currentIndex == slides.length - 1
+                        ? AppColors.success
+                        : AppColors.primary,
+                    isPrimary: true,
+                  ),
+                ),
               ),
             ],
           ),

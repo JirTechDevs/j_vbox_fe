@@ -18,6 +18,9 @@ dependencies:
   
   # Audio for button sounds
   audioplayers: ^5.2.1
+  
+  # VR Settings persistence
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +31,8 @@ flutter:
   uses-material-design: true
 
   # Assets configuration
+  shaders:
+    - shaders/vr_distortion.frag
   assets:
     # Video assets (to be provided by client)
     - assets/videos/

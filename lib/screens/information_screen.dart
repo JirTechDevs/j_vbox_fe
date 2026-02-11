@@ -237,6 +237,7 @@ class _InformationContent extends StatelessWidget {
             Text(
               'Kata Pengantar',
               style: AppTextStyles.title.copyWith(
+                fontSize: 18,
                 color: AppColors.primary,
                 shadows: [
                   const Shadow(
@@ -266,7 +267,7 @@ class _InformationContent extends StatelessWidget {
                 text:
                     'Aplikasi ini dirancang sebagai ruang aman untuk belajar tanpa menghakimi, konten dikembangkan dengan prinsip non-diskriminasi, non-stigmatisasi, dan berorientasi pada perubahan perilaku sesuai tujuan pencegahan HIV.',
                 style: AppTextStyles.bodyText.copyWith(
-                  fontSize: 16,
+                  fontSize: 12,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.justify,
@@ -306,7 +307,7 @@ class _InformationContent extends StatelessWidget {
             duration: hookAudioDuration,
 
             style: AppTextStyles.bodyText.copyWith(
-              fontSize: 20,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               color: Colors.white,
               height: 1.4,
