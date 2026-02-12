@@ -101,10 +101,8 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       // Auto-advance after 2 seconds when audio completes
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
-          // Only advance if we are not on the last slide
-          if (_currentIndex < _slides.length - 1) {
-            _nextSlide();
-          }
+          // Always advance, including on last slide (goes to role selection)
+          _nextSlide();
         }
       });
     });

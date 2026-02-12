@@ -166,11 +166,11 @@ class AppDimensions {
 /// Video paths mapping
 class VideoAssets {
   static const Map<String, String> videos = {
-    'gay_risky': 'assets/videos/gay/beresiko_gay.mp4',
-    'gay_safe': 'assets/videos/gay/tidak_beresiko_gay.mp4',
-    // Temporarily using gay videos for PSK until assets are provided
-    'psk_risky': 'assets/videos/gay/beresiko_gay.mp4',
-    'psk_safe': 'assets/videos/gay/tidak_beresiko_gay.mp4',
+    'gay_risky': 'assets/videos/gay/gay_unsafe.mp4',
+    'gay_safe': 'assets/videos/gay/gay_safe.mp4',
+    // Temporary: PSK videos TBD
+    'psk_risky': 'assets/videos/gay/gay_unsafe.mp4',
+    'psk_safe': 'assets/videos/gay/gay_safe.mp4',
     // Outcome videos (using Placeholders if not available, or mapping to existing for testing)
     'positive_end': 'assets/videos/positive_end.mp4',
     'recovery': 'assets/videos/recovery.mp4',
