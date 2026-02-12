@@ -112,9 +112,24 @@ class _VRLensDistortionState extends State<VRLensDistortion>
 
     return Stack(
       children: [
-        // Source content - hidden via Transform
-        Transform.translate(
-          offset: const Offset(10000, 10000),
+        // Distorted background (visual only)
+        if (_capturedImage != null)
+          Positioned.fill(
+            child: CustomPaint(
+              painter: VRDistortionPainter(
+                image: _capturedImage!,
+                program: _program!,
+                k1: widget.k1,
+                k2: widget.k2,
+                ipdOffset: widget.ipdOffset,
+                colorClamp: widget.colorClamp,
+              ),
+            ),
+          ),
+
+        // Hidden source for RepaintBoundary capture
+        Opacity(
+          opacity: 0.0,
           child: RepaintBoundary(
             key: _repaintKey,
             child: Builder(builder: (context) {
@@ -132,20 +147,13 @@ class _VRLensDistortionState extends State<VRLensDistortion>
           ),
         ),
 
-        // Distorted output
-        if (_capturedImage != null)
-          Positioned.fill(
-            child: CustomPaint(
-              painter: VRDistortionPainter(
-                image: _capturedImage!,
-                program: _program!,
-                k1: widget.k1,
-                k2: widget.k2,
-                ipdOffset: widget.ipdOffset,
-                colorClamp: widget.colorClamp,
-              ),
-            ),
+        // Interactive overlay (actual widget for touch events)
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: false,
+            child: widget.child,
           ),
+        ),
       ],
     );
   }

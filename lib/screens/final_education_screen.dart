@@ -1,5 +1,4 @@
 import '../widgets/vr_splitter.dart';
-import '../widgets/vr_lens_distortion.dart';
 import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,19 +67,19 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       title: 'Tanda & Gejala (4/4)',
       content:
           'Yang terakhir, AIDS. Tahap lanjut dari infeksi virus HIV, kondisi ini terjadi ketika imun tubuh sudah sangat lemah. Virus dalam tubuh akan berkembang cepat dan menimbulkan berbagai gejala berat bahkan bisa menyebabkan kematian.\n\nJadi, jika sudah merasa memiliki tanda-tanda seperti yang sudah dijelaskan.. Yuk periksa dan kendalikan! Banyak orang dengan HIV bisa hidup sehat dengan pengobatan dan kontrol rutin.',
-      audioPath: '',
+      audioPath: 'sounds/vo/penanganan.mp3',
     ),
     const EducationSlide(
       title: 'Penanganan',
       content:
           'HIV ditangani dengan konsumsi obat antiretroviral (ARV) secara rutin serta pemeriksaan kesehatan berkala untuk memantau kondisi dan menekan jumlah virus.',
-      audioPath: '',
+      audioPath: 'sounds/vo/penanganan-2.mp3',
     ),
     const EducationSlide(
       title: 'Pencegahan',
       content:
           'HIV dapat dicegah dengan menggunakan kondom secara konsisten, tidak berbagi jarum suntik, melakukan tes HIV secara rutin, serta mengonsumsi obat pencegahan dan pengobatan (PrEP dan ARV) sesuai anjuran tenaga kesehatan. Perilaku seksual yang lebih aman dan akses layanan kesehatan yang tepat membantu menurunkan risiko penularan HIV.',
-      audioPath: 'sounds/vo/prevention.mp3', // Placeholder
+      audioPath: 'sounds/vo/pencegahan.mp3', // Placeholder
     ),
     // const EducationSlide(
     //   title: 'Pesan Penting',
@@ -99,18 +98,12 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
     _playCurrentSlideAudio();
 
     _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((event) {
-      // Use a post-frame callback or simple future to avoid state race conditions
+      // Auto-advance after 2 seconds when audio completes
       Future.delayed(const Duration(seconds: 2), () {
-        if (mounted && _currentIndex == _currentIndex) {
-          // Re-check index haven't changed manually
+        if (mounted) {
           // Only advance if we are not on the last slide
           if (_currentIndex < _slides.length - 1) {
-            if (_slides[_currentIndex].audioPath.isNotEmpty) {
-              _nextSlide();
-            }
-          } else {
-            // Optional: Auto-finish? User might want to read final text.
-            // Let's NOT auto-finish the last slide to avoid sudden exit.
+            _nextSlide();
           }
         }
       });
@@ -204,39 +197,32 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: VRLensDistortion(
-          // Production values optimized for VR Box (45mm object distance)
-          // Minimal distortion to match comfortable video playback experience
-          k1: 0.01,
-          k2: 0.005,
-          ipdOffset: 0.0, // Centered for average IPD (64mm)
-          child: VRSplitter(
-            builder: (context, eyeIndex) {
-              return Container(
-                decoration: const BoxDecoration(
-                  gradient: AppGradients.cosmicBackground,
-                ),
-                child: SafeArea(
-                  child: Center(
-                    child: Transform.scale(
-                      scale: 0.65, // Simulates distance (1.5m - 3.0m feel)
-                      child: _FinalEducationContent(
-                        pageController: eyeIndex == 0
-                            ? _leftPageController
-                            : _rightPageController,
-                        currentIndex: _currentIndex,
-                        slides: _slides,
-                        currentSlideDuration: _currentSlideDuration,
-                        onPageChanged: _onPageChanged,
-                        onNext: _nextSlide,
-                        onPrevious: _previousSlide,
-                      ),
+        body: VRSplitter(
+          builder: (context, eyeIndex) {
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: AppGradients.cosmicBackground,
+              ),
+              child: SafeArea(
+                child: Center(
+                  child: Transform.scale(
+                    scale: 0.65, // Simulates distance (1.5m - 3.0m feel)
+                    child: _FinalEducationContent(
+                      pageController: eyeIndex == 0
+                          ? _leftPageController
+                          : _rightPageController,
+                      currentIndex: _currentIndex,
+                      slides: _slides,
+                      currentSlideDuration: _currentSlideDuration,
+                      onPageChanged: _onPageChanged,
+                      onNext: _nextSlide,
+                      onPrevious: _previousSlide,
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
