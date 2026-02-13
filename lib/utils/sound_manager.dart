@@ -26,13 +26,17 @@ class SoundManager {
 
   /// Play button press sound
   Future<void> playButtonPress() async {
-    if (!_initialized) return;
+    await playSound(SoundAssets.buttonPress);
+  }
+
+  /// Play a specific sound asset
+  Future<void> playSound(String assetPath) async {
+    if (!_initialized) await initialize();
 
     try {
       await _audioPlayer.stop();
-      await _audioPlayer.play(AssetSource(SoundAssets.buttonPress));
+      await _audioPlayer.play(AssetSource(assetPath));
     } catch (e) {
-      // Silently fail if sound playback fails
       print('Sound playback failed: $e');
     }
   }

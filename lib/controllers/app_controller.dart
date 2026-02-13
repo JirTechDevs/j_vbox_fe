@@ -145,16 +145,47 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get the appropriate video path for time lapse
-  String getTimeLapseVideoPath() {
+  /// Get the appropriate video sequence for time lapse
+  /// For SAFE behavior: plays risky → rewind → safe (flashback scenario)
+  /// For RISKY behavior: plays only risky
+  List<String> getTimeLapseVideoSequence() {
     if (_selectedRole == null || _selectedBehavior == null) {
-      return '';
+      return [];
     }
 
     final role = _selectedRole == UserRole.gay ? 'gay' : 'psk';
-    final behavior = _selectedBehavior == BehaviorType.risky ? 'risky' : 'safe';
 
-    return VideoAssets.getVideoPath(role, behavior);
+    /* PSK Scenario Logic (Temporarily Disabled)
+    if (_selectedBehavior == BehaviorType.risky) {
+      // Risky choice: Play only the risky video
+      return [VideoAssets.getVideoPath(role, 'risky')];
+    } else {
+      // Safe choice: Play risky → rewind → safe (flashback to show "what if")
+      // NOTE: Flashback flow is enabled for PSK as well
+      return [
+        VideoAssets.getVideoPath(role, 'risky'), // First, show consequences
+        VideoAssets.videos['rewind_after_risky']!, // Rewind transition
+        VideoAssets.getVideoPath(role, 'safe'), // Then, show safe path
+      ];
+    }
+    */
+
+    // GAY Scenario Logic (Restored)
+    if (_selectedBehavior == BehaviorType.risky) {
+      // Risky choice: Play Risky → Rewind → Safe
+      return [
+        VideoAssets.getVideoPath(role, 'risky'),
+        VideoAssets.videos['rewind_after_risky']!,
+        VideoAssets.getVideoPath(role, 'safe'),
+      ];
+    } else {
+      // Safe choice: Play Safe → Rewind → Risky
+      return [
+        VideoAssets.getVideoPath(role, 'safe'),
+        VideoAssets.videos['rewind_after_safe']!,
+        VideoAssets.getVideoPath(role, 'risky'),
+      ];
+    }
   }
 
   /// Get the appropriate outcome video path

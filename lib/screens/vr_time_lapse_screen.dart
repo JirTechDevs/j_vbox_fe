@@ -12,12 +12,12 @@ class VRTimeLapseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.read<AppController>();
-    final videoPath = controller.getTimeLapseVideoPath();
+    final videoSequence = controller.getTimeLapseVideoSequence();
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: VRVideoPlayer(
-        videoPath: videoPath,
+        videoPaths: videoSequence,
         onVideoComplete: () {
           // Auto-exit VR and proceed to health result
           controller.completeTimeLapse();

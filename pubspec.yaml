@@ -15,6 +15,7 @@ dependencies:
   
   # Video playback
   video_player: ^2.8.2
+  sensors_plus: ^6.0.1
   
   # Audio for button sounds
   audioplayers: ^5.2.1
@@ -37,6 +38,7 @@ flutter:
     # Video assets (to be provided by client)
     - assets/videos/
     - assets/videos/gay/
+    - assets/videos/psp/
     # Sound effects
     - assets/sounds/
     - assets/sounds/vo/

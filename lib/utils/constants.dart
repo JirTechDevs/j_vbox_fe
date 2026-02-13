@@ -168,7 +168,13 @@ class VideoAssets {
   static const Map<String, String> videos = {
     'gay_risky': 'assets/videos/gay/gay_unsafe.mp4',
     'gay_safe': 'assets/videos/gay/gay_safe.mp4',
-    // Temporary: PSK videos TBD
+    // Rewind/Flashback transitions
+    'rewind_after_risky': 'assets/videos/gay/rewind_1_beresiko.mp4',
+    'rewind_after_safe': 'assets/videos/gay/rewind_2_tidak beresiko.mp4',
+    // Temporary: PSK videos TBD -> Now Implemented (But DISABLED)
+    // 'psk_risky': 'assets/videos/psp/psp_unsafe.mp4',
+    // 'psk_safe': 'assets/videos/psp/psp_safe.mp4',
+    // Fallback to Gay videos for now
     'psk_risky': 'assets/videos/gay/gay_unsafe.mp4',
     'psk_safe': 'assets/videos/gay/gay_safe.mp4',
     // Outcome videos (using Placeholders if not available, or mapping to existing for testing)
@@ -191,4 +197,6 @@ class VideoAssets {
 /// Sound assets
 class SoundAssets {
   static const String buttonPress = 'sounds/button_press.mp3';
+  static const String choiceVO = 'sounds/vo/choice.mp3';
+  static const String choiceBehaveVO = 'sounds/vo/choice_behave.mp3';
 }

@@ -4,14 +4,14 @@ import 'package:video_player/video_player.dart';
 
 /// VR Video Player Widget
 /// Displays video in split-screen mode (left/right) for VR Box viewing
-/// No user controls - auto-plays and auto-exits on completion
+/// Supports playing a sequence of videos for flashback scenarios
 class VRVideoPlayer extends StatefulWidget {
-  final String videoPath;
+  final List<String> videoPaths; // Support multiple videos in sequence
   final VoidCallback onVideoComplete;
 
   const VRVideoPlayer({
     Key? key,
-    required this.videoPath,
+    required this.videoPaths,
     required this.onVideoComplete,
   }) : super(key: key);
 
@@ -25,6 +25,7 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
   bool _hasError = false;
   bool _showPlayButton = false;
   String _debugStatus = 'Initializing...';
+  int _currentVideoIndex = 0;
 
   @override
   void initState() {
@@ -43,14 +44,24 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
-  /// Initialize video player
+  /// Initialize video player for current video in sequence
   Future<void> _initializeVideo() async {
     try {
-      setState(() => _debugStatus = 'Loading video asset...');
-      _controller = VideoPlayerController.asset(widget.videoPath);
+      if (_currentVideoIndex >= widget.videoPaths.length) {
+        // All videos completed
+        widget.onVideoComplete();
+        return;
+      }
+
+      setState(() => _debugStatus =
+          'Loading video ${_currentVideoIndex + 1}/${widget.videoPaths.length}...');
+
+      final currentVideoPath = widget.videoPaths[_currentVideoIndex];
+      _controller = VideoPlayerController.asset(currentVideoPath);
 
       await _controller.initialize();
-      setState(() => _debugStatus = 'Video initialized. Preparing playback...');
+      setState(
+          () => _debugStatus = 'Video ${_currentVideoIndex + 1} initialized.');
 
       await _controller.setLooping(false);
 
@@ -83,8 +94,26 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
   /// Listen for video completion
   void _videoListener() {
     if (_controller.value.position >= _controller.value.duration) {
-      // Video completed - trigger callback
+      // Current video completed
       _controller.removeListener(_videoListener);
+      _playNextVideo();
+    }
+  }
+
+  /// Play next video in sequence
+  Future<void> _playNextVideo() async {
+    await _controller.dispose();
+    _currentVideoIndex++;
+
+    if (_currentVideoIndex < widget.videoPaths.length) {
+      // More videos to play
+      setState(() {
+        _isInitialized = false;
+        _showPlayButton = false;
+      });
+      await _initializeVideo();
+    } else {
+      // All videos completed
       widget.onVideoComplete();
     }
   }
@@ -211,7 +240,7 @@ class _VRVideoPlayerState extends State<VRVideoPlayer> {
             ),
             const SizedBox(height: 8),
             Text(
-              'File: ${widget.videoPath}',
+              'File: ${widget.videoPaths[_currentVideoIndex]}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.grey,

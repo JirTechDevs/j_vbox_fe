@@ -19,7 +19,7 @@ class VRNegativeOutcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       body: VRVideoPlayer(
-        videoPath: videoPath,
+        videoPaths: [videoPath], // Convert to array
         onVideoComplete: () async {
           // Wait 5 seconds on result screen
           await Future.delayed(const Duration(seconds: 5));
