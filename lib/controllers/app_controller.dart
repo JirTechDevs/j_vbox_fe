@@ -167,7 +167,7 @@ class AppController extends ChangeNotifier {
         VideoAssets.videos['rewind_after_risky']!, // Rewind transition
         VideoAssets.getVideoPath(role, 'safe'), // Then, show safe path
       ];
-    }
+    } 
     */
 
     // GAY Scenario Logic (Restored)

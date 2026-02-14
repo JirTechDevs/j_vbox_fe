@@ -78,8 +78,8 @@ class _FinalEducationScreenState extends State<FinalEducationScreen> {
     const EducationSlide(
       title: 'Pencegahan',
       content:
-          'HIV dapat dicegah dengan menggunakan kondom secara konsisten, tidak berbagi jarum suntik, melakukan tes HIV secara rutin, serta mengonsumsi obat pencegahan dan pengobatan (PrEP dan ARV) sesuai anjuran tenaga kesehatan. Perilaku seksual yang lebih aman dan akses layanan kesehatan yang tepat membantu menurunkan risiko penularan HIV.',
-      audioPath: 'sounds/vo/pencegahan.mp3', // Placeholder
+          'A. Abstinence. Tidak melakukan hubungan seks (bagi yang belum menikah).\n\nB. Be Faithful: Saling setia pada satu pasangan.\n\nC. Condom: Gunakan kondom jika berhubungan seks berisiko.\n\nD. Don\'t Use Drugs: Hindari penggunaan narkoba, terutama suntik.\n\nE. Education: Cari informasi yang benar tentang HIV/AIDS.',
+      audioPath: 'sounds/vo/prevention_new.mp3', // Updated
     ),
     // const EducationSlide(
     //   title: 'Pesan Penting',
